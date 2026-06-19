@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Страница не найдена | BizkitDigital</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/common.css">
+    <style>
+        .error-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+        }
+        .error-code {
+            font-size: 8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8b5cf6, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+        .error-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #f3f4f6;
+            margin-bottom: 12px;
+        }
+        .error-text {
+            color: #9ca3af;
+            font-size: 1rem;
+            max-width: 400px;
+            margin-bottom: 32px;
+        }
+        .error-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: #fff;
+            font-weight: 600;
+            padding: 14px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .error-btn:hover {
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.45);
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body class="grid-bg">
+    <div class="error-page">
+        <div class="error-code">404</div>
+        <div class="error-title">Страница не найдена</div>
+        <div class="error-text">Похоже, этой страницы больше нет. Но мы можем помочь вам с сайтом, ботом или AI-чатом.</div>
+        <a href="/" class="error-btn">Вернуться на главную</a>
+    </div>
+</body>
+</html>

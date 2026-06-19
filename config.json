@@ -1,0 +1,63 @@
+{
+    "project_name": "BizkitDigital",
+    "domain": "bizkitdigital.vercel.app",
+    "owner": {
+        "name": "Ленгардт Дмитрий Евгеньевич",
+        "inn": "420544798477",
+        "tax_status": "самозанятый (НПД)",
+        "telegram": "@vxrxntsxff",
+        "bot": "@BizkitDigital_bot",
+        "phone": "+7(951)5922618",
+        "email": "dimalengardt87@gmail.com",
+        "city": "Кемерово"
+    },
+    "packages": [
+        {
+            "id": "start",
+            "name": "Старт",
+            "price": 20000,
+            "features": [
+                "Лендинг (до 3 экранов)",
+                "Telegram-бот для записи",
+                "Адаптивный дизайн",
+                "Домен на 1 год"
+            ]
+        },
+        {
+            "id": "business",
+            "name": "Бизнес",
+            "price": 35000,
+            "popular": true,
+            "features": [
+                "Лендинг (до 5 экранов)",
+                "Telegram-бот для записи",
+                "AI-чат на сайте",
+                "Интеграция с Google Таблицами",
+                "Домен на 1 год"
+            ]
+        },
+        {
+            "id": "premium",
+            "name": "Премиум",
+            "price": 50000,
+            "features": [
+                "Лендинг (до 7 экранов)",
+                "Telegram-бот для записи",
+                "AI-чат на сайте",
+                "Онлайн-оплата (ЮKassa)",
+                "CRM-интеграция",
+                "Домен на 1 год",
+                "3 месяца поддержки"
+            ]
+        }
+    ],
+    "subscription": {
+        "price": 1500,
+        "period": "month",
+        "features": [
+            "Обновление контента",
+            "Мониторинг работоспособности",
+            "Консультации"
+        ]
+    }
+}
