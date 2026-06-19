@@ -10,7 +10,7 @@
             "dest": "/.uploads/$1"
         },
         {
-            "src": "/(offer|requisites|success|cases|blog|contract|404)\\.html",
+            "src": "/(offer|requisites|success|cases|blog|contract)\\.html",
             "dest": "/$1.html"
         },
         {
@@ -36,11 +36,6 @@
         {
             "src": "/robots\\.txt",
             "dest": "/robots.txt"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/404.html",
-            "status": 404
         }
     ],
     "headers": [
