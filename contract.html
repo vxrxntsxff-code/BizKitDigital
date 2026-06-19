@@ -9,158 +9,134 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/common.css">
     <style>
-        .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
-        .content { padding: 120px 0 80px; }
-        .content h1 { font-size: 2rem; font-weight: 700; color: #f3f4f6; margin-bottom: 0.5rem; }
-        .content h2 { font-size: 1.15rem; font-weight: 600; color: #f3f4f6; margin: 2rem 0 0.75rem; }
-        .content h3 { font-size: 1rem; font-weight: 600; color: #d1d5db; margin: 1.5rem 0 0.5rem; }
-        .content p { margin-bottom: 0.75rem; color: #9ca3af; font-size: 0.95rem; }
-        .content ul { padding-left: 1.5rem; margin-bottom: 0.75rem; }
-        .content li { margin-bottom: 0.4rem; color: #9ca3af; font-size: 0.95rem; }
-        .accent { color: #8b5cf6; }
-        .date { color: #6b7280; font-size: 0.875rem; margin-bottom: 2rem; }
-        .content strong { color: #d1d5db; }
-        .back-link { display: inline-flex; align-items: center; gap: 8px; color: #8b5cf6; text-decoration: none; font-size: 0.875rem; margin-bottom: 2rem; transition: color 0.2s; }
-        .back-link:hover { color: #a78bfa; }
-        .doc-header { text-align: center; padding: 2rem 0; border-bottom: 2px solid #8b5cf6; margin-bottom: 2rem; }
-        .doc-header h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
-        .doc-header .doc-number { color: #6b7280; font-size: 0.875rem; }
-        .doc-parties { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0; padding: 1.5rem; background: #111113; border: 1px solid #1c1c24; border-radius: 12px; }
-        .doc-parties h3 { color: #8b5cf6; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
-        .doc-parties p { font-size: 0.9rem; margin-bottom: 0.3rem; }
-        .doc-parties .label { color: #6b7280; }
-        .doc-parties .value { color: #e5e5e5; font-weight: 500; }
-        .doc-section { margin-bottom: 1.5rem; }
-        .doc-section h3 { color: #8b5cf6; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; border-bottom: 1px solid #1c1c24; padding-bottom: 0.5rem; }
-        .doc-section p { font-size: 0.9rem; }
-        .doc-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
-        .doc-table th, .doc-table td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #1c1c24; }
-        .doc-table th { color: #8b5cf6; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
-        .doc-table td { color: #d1d5db; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #e5e5e5; font-size: 14px; line-height: 1.5; }
+        a { color: inherit; text-decoration: none; }
+
+        /* Header */
+        .site-header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+            background: rgba(10,10,10,0.95); backdrop-filter: blur(16px);
+            border-bottom: 1px solid #1e1e1e; height: 56px;
+            display: flex; align-items: center; padding: 0 24px;
+        }
+        .site-header a { display: flex; align-items: center; gap: 8px; }
+        .site-header span { font-size: 1rem; }
+        .site-header .back { color: #8b5cf6; font-size: 0.85rem; margin-left: auto; }
+
+        /* Document */
+        .doc-wrap { max-width: 210mm; margin: 0 auto; padding: 80px 20mm 40px; }
+        .doc { background: #fff; color: #1a1a1a; border-radius: 4px; padding: 40px 32px; }
+
+        /* Print styles */
+        @media print {
+            body { background: #fff; }
+            .site-header, .print-btn-wrap, .no-print { display: none !important; }
+            .doc-wrap { padding: 0; max-width: 100%; }
+            .doc { padding: 20mm 25mm; box-shadow: none; border: none; border-radius: 0; }
+            @page { size: A4; margin: 0; }
+        }
+
+        /* Document styles */
+        .doc-header { text-align: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #1a1a1a; }
+        .doc-header h1 { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+        .doc-header .doc-num { font-size: 12px; color: #666; }
+        .doc-header .doc-date { font-size: 12px; color: #666; margin-top: 8px; }
+
+        .doc-parties { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; padding: 12px 16px; background: #f8f8f8; border: 1px solid #e0e0e0; border-radius: 4px; }
+        .doc-parties h3 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #333; margin-bottom: 8px; }
+        .doc-parties p { font-size: 12px; color: #333; margin-bottom: 4px; line-height: 1.4; }
+        .doc-parties .label { color: #666; }
+
+        .doc-section { margin-bottom: 14px; }
+        .doc-section h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: #1a1a1a; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid #e0e0e0; }
+        .doc-section p { font-size: 12px; color: #333; margin-bottom: 6px; line-height: 1.5; }
+        .doc-section ul { padding-left: 16px; margin-bottom: 6px; }
+        .doc-section li { font-size: 12px; color: #333; margin-bottom: 3px; line-height: 1.4; }
+
+        .doc-table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 11px; }
+        .doc-table th, .doc-table td { padding: 6px 8px; text-align: left; border-bottom: 1px solid #e0e0e0; }
+        .doc-table th { font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: #333; font-size: 10px; }
+        .doc-table td { color: #444; }
         .doc-table tr:last-child td { border-bottom: none; }
-        .doc-total { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; margin: 1rem 0; }
-        .doc-total .label { color: #9ca3af; font-size: 0.9rem; }
-        .doc-total .value { color: #fff; font-size: 1.25rem; font-weight: 700; }
-        .doc-signatures { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #1c1c24; }
-        .signature-block h4 { color: #8b5cf6; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem; }
-        .signature-line { border-bottom: 1px solid #3a3a3a; padding-bottom: 0.5rem; margin-bottom: 0.5rem; min-height: 2rem; color: #6b7280; font-size: 0.8rem; }
-        .signature-line.filled { color: #e5e5e5; }
-        .signature-label { color: #6b7280; font-size: 0.75rem; }
-        .doc-footer { text-align: center; padding: 2rem 0; margin-top: 2rem; border-top: 1px solid #1c1c24; color: #6b7280; font-size: 0.8rem; }
-        .print-btn { display: inline-flex; align-items: center; gap: 8px; background: #8b5cf6; color: #fff; border: none; padding: 12px 24px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 1rem; }
+
+        .doc-total { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #f0f0f0; border: 1px solid #ddd; border-radius: 4px; margin: 12px 0; }
+        .doc-total .label { color: #666; font-size: 12px; }
+        .doc-total .value { color: #1a1a1a; font-size: 14px; font-weight: 700; }
+
+        .doc-signatures { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 24px; padding-top: 16px; border-top: 1px solid #e0e0e0; }
+        .signature-block h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: #333; margin-bottom: 40px; }
+        .signature-block p { font-size: 12px; color: #444; margin-bottom: 20px; }
+        .signature-line { border-bottom: 1px solid #999; padding-bottom: 4px; margin-bottom: 4px; min-height: 20px; color: #999; font-size: 10px; }
+        .sig-label { font-size: 10px; color: #999; }
+
+        .doc-footer { text-align: center; padding-top: 12px; margin-top: 16px; border-top: 1px solid #e0e0e0; font-size: 10px; color: #999; }
+
+        .print-btn-wrap { text-align: center; padding: 24px 0; }
+        .print-btn { display: inline-flex; align-items: center; gap: 8px; background: #8b5cf6; color: #fff; border: none; padding: 12px 24px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
         .print-btn:hover { background: #7c3aed; }
-        @media print { body { background: #fff; color: #000; } .header-blur, .menu-toggle, .print-btn, .back-link { display: none !important; } .content { padding: 0; } .content h1, .content h2, .content h3, .doc-parties h3, .doc-section h3, .doc-table th, .doc-signatures h4 { color: #000; } .content p, .content li, .doc-parties p, .doc-table td, .doc-section p { color: #333; } .doc-header { border-bottom-color: #000; } .doc-parties { background: #f5f5f5; border-color: #ddd; } .doc-total { background: #f0f0f0; border-color: #ccc; } .doc-total .value { color: #000; } .signature-line { border-bottom-color: #000; } .doc-signatures { border-top-color: #000; } .doc-footer { border-top-color: #000; color: #666; } .container { max-width: 100%; padding: 0 20mm; } }
-        @media (max-width: 600px) { .doc-parties { grid-template-columns: 1fr; } .doc-signatures { grid-template-columns: 1fr; gap: 2rem; } }
+
+        @media (max-width: 600px) {
+            .doc { padding: 24px 16px; }
+            .doc-parties { grid-template-columns: 1fr; }
+            .doc-signatures { grid-template-columns: 1fr; gap: 24px; }
+        }
     </style>
-    <meta name="description" content="Договор на разработку сайта, Telegram-бота и AI-чата. BizkitDigital, Ленгардт Дмитрий Евгеньевич, ИНН 420544798477.">
-    <!-- Yandex.Metrika counter -->
-    <script type="text/javascript"> (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)}; m[i].l=1*new Date(); for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }} k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)}) (window, document, "script", "https://mc.yandex.ru/metrika/tag.js?id=109619558", "ym"); ym(109619558, "init", {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true}); </script> <noscript><div><img src="https://mc.yandex.ru/watch/109619558" style="position:absolute; left:-9999px;" alt="" /></div></noscript> <!-- /Yandex.Metrika counter -->
 </head>
 <body>
-    <header class="header-blur fixed top-0 left-0 right-0 z-50">
-        <div style="max-width: 1152px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between;">
-            <a href="/" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                    <rect x="2" y="2" width="12" height="12" rx="3" fill="#8b5cf6"/>
-                    <rect x="18" y="2" width="12" height="12" rx="3" fill="#3a3a3a"/>
-                    <rect x="2" y="18" width="12" height="12" rx="3" fill="#3a3a3a"/>
-                    <rect x="18" y="18" width="12" height="12" rx="3" fill="#8b5cf6" opacity="0.5"/>
-                </svg>
-                <span style="font-size: 1.1rem; letter-spacing: -0.02em;">
-                    <span style="font-weight: 700; color: #fff;">Bizkit</span><span style="font-weight: 400; color: #9ca3af;">Digital</span>
-                </span>
-            </a>
-            <button class="menu-toggle" aria-label="Меню">
-                <span></span><span></span><span></span>
-            </button>
-            <nav style="display: flex; align-items: center;">
-                <a href="/#services" class="nav-link">Услуги</a>
-                <a href="/cases.html" class="nav-link">Кейсы</a>
-                <a href="/#pricing" class="nav-link">Цены</a>
-                <a href="/#faq" class="nav-link">FAQ</a>
-                <a href="/blog.html" class="nav-link">Блог</a>
-            </nav>
-            <a href="https://t.me/BizkitDigital_bot" target="_blank" style="background: #8b5cf6; color: #fff; font-weight: 600; font-size: 0.875rem; padding: 10px 20px; border-radius: 10px; text-decoration: none; white-space: nowrap;">Написать в Telegram</a>
-        </div>
+    <header class="site-header">
+        <a href="/">
+            <svg width="24" height="24" viewBox="0 0 32 32" fill="none"><rect x="2" y="2" width="12" height="12" rx="3" fill="#8b5cf6"/><rect x="18" y="2" width="12" height="12" rx="3" fill="#3a3a3a"/><rect x="2" y="18" width="12" height="12" rx="3" fill="#3a3a3a"/><rect x="18" y="18" width="12" height="12" rx="3" fill="#8b5cf6" opacity="0.5"/></svg>
+            <span><b style="color:#fff">Bizkit</b><span style="color:#9ca3af">Digital</span></span>
+        </a>
+        <a href="/" class="back">← Назад</a>
     </header>
 
-    <main class="content">
-        <div class="container">
-            <a href="/" class="back-link">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-                Вернуться на главную
-            </a>
-
+    <div class="doc-wrap">
+        <div class="doc">
             <div class="doc-header">
-                <p class="doc-number">Договор № ____________</p>
+                <p class="doc-num">Договор № ____________</p>
                 <h1>Договор на оказание услуг</h1>
-                <p class="date">г. Кемерово &nbsp;&nbsp;&nbsp; «____» _____________ 202__ г.</p>
+                <p class="doc-date">г. Кемерово &nbsp;&nbsp; «____» _____________ 202__ г.</p>
             </div>
 
             <div class="doc-parties">
                 <div>
                     <h3>Исполнитель</h3>
-                    <p><span class="label">ФИО:</span> <span class="value">Ленгардт Дмитрий Евгеньевич</span></p>
-                    <p><span class="label">ИНН:</span> <span class="value">420544798477</span></p>
-                    <p><span class="label">Статус:</span> <span class="value">Самозанятый (НПД)</span></p>
-                    <p><span class="label">Тел:</span> <span class="value">+7 (951) 592-26-18</span></p>
-                    <p><span class="label">Telegram:</span> <span class="value">@BizkitDigital_bot</span></p>
+                    <p><span class="label">ФИО:</span> Ленгардт Дмитрий Евгеньевич</p>
+                    <p><span class="label">ИНН:</span> 420544798477</p>
+                    <p><span class="label">Статус:</span> Самозанятый (НПД)</p>
+                    <p><span class="label">Тел:</span> +7 (951) 592-26-18</p>
+                    <p><span class="label">Telegram:</span> @vxrxntsxff</p>
                 </div>
                 <div>
                     <h3>Заказчик</h3>
-                    <p><span class="label">ФИО:</span> <span class="value">________________________________</span></p>
-                    <p><span class="label">Тел:</span> <span class="value">________________________________</span></p>
-                    <p><span class="label">Telegram:</span> <span class="value">________________________________</span></p>
-                    <p><span class="label">Email:</span> <span class="value">________________________________</span></p>
+                    <p><span class="label">ФИО:</span> ________________________________</p>
+                    <p><span class="label">Тел:</span> ________________________________</p>
+                    <p><span class="label">Telegram:</span> ________________________________</p>
+                    <p><span class="label">Email:</span> ________________________________</p>
                 </div>
             </div>
 
             <div class="doc-section">
                 <h3>1. Предмет договора</h3>
                 <p>1.1. Исполнитель обязуется оказать Заказчику услуги по разработке цифровых решений в соответствии с выбранной комплектацией.</p>
-                <p>1.2. Конкретный перечень услуг, сроки и стоимость определяются ниже.</p>
+                <p>1.2. Конкретный перечень услуг, сроки и стоимость определяются при оформлении заказа.</p>
             </div>
 
             <div class="doc-section">
-                <h3>2. Выбранная комплектация</h3>
+                <h3>2. Комплектация</h3>
                 <table class="doc-table">
-                    <thead>
-                        <tr>
-                            <th>Услуга</th>
-                            <th>Включено</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Услуга</th><th>Включено</th></tr></thead>
                     <tbody>
-                        <tr>
-                            <td>Лендинг</td>
-                            <td>Адаптивный дизайн, до ___ экранов</td>
-                        </tr>
-                        <tr>
-                            <td>Telegram-бот</td>
-                            <td>Автоматическая запись клиентов</td>
-                        </tr>
-                        <tr>
-                            <td>AI-чат на сайте</td>
-                            <td>Ответы на вопросы 24/7</td>
-                        </tr>
-                        <tr>
-                            <td>Онлайн-оплата</td>
-                            <td>ЮKassa (карты, СБП)</td>
-                        </tr>
-                        <tr>
-                            <td>Интеграция с CRM</td>
-                            <td>Google Таблицы / amoCRM</td>
-                        </tr>
-                        <tr>
-                            <td>Домен</td>
-                            <td>На 1 год</td>
-                        </tr>
-                        <tr>
-                            <td>Поддержка после запуска</td>
-                            <td>от 1 500 ₽/мес (обновление контента, мониторинг, консультации)</td>
-                        </tr>
+                        <tr><td>Лендинг</td><td>Адаптивный дизайн, до ___ экранов</td></tr>
+                        <tr><td>Telegram-бот</td><td>Автоматическая запись клиентов</td></tr>
+                        <tr><td>AI-чат на сайте</td><td>Ответы на вопросы 24/7</td></tr>
+                        <tr><td>Онлайн-оплата</td><td>ЮKassa (карты, СБП)</td></tr>
+                        <tr><td>Интеграция с CRM</td><td>Google Таблицы / Notion</td></tr>
+                        <tr><td>Домен</td><td>На 1 год</td></tr>
+                        <tr><td>Поддержка</td><td>от 1 500 ₽/мес</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -168,12 +144,8 @@
             <div class="doc-section">
                 <h3>3. Стоимость и порядок оплаты</h3>
                 <p>3.1. Общая стоимость услуг: <strong>___________________________ (___________________________) рублей.</strong></p>
-                <p>3.2. Оплата производится по схеме 50/50:</p>
-                <ul>
-                    <li>Предоплата 50% — при подписании договора</li>
-                    <li>Окончательный расчёт 50% — после сдачи готового результата</li>
-                </ul>
-                <p>3.3. Оплата осуществляется банковским переводом, через ЮKassa (банковские карты Visa, Mastercard, Мир) или СБП.</p>
+                <p>3.2. Оплата производится в полном объёме через платёжную систему ЮKassa (банковские карты Visa, Mastercard, Мир) или СБП.</p>
+                <p>3.3. Оплата считается произведённой с момента подтверждения транзакции платёжной системой.</p>
             </div>
 
             <div class="doc-total">
@@ -183,90 +155,72 @@
 
             <div class="doc-section">
                 <h3>4. Сроки оказания услуг</h3>
-                <p>4.1. Сроки оказания услуг составляют от 2 до 5 рабочих дней с момента получения всех необходимых материалов от Заказчика.</p>
+                <p>4.1. Сроки оказания услуг — от 2 до 5 рабочих дней с момента получения всех необходимых материалов от Заказчика.</p>
                 <p>4.2. Сроки могут быть продлены по согласованию сторон в случае изменения объёма работ.</p>
-                <p>4.3. Началом работ считается дата получения предоплаты и всех необходимых материалов.</p>
+                <p>4.3. Началом работ считается дата получения оплаты и всех необходимых материалов.</p>
             </div>
 
             <div class="doc-section">
                 <h3>5. Приёмка и гарантии</h3>
                 <p>5.1. Заказчик вправе запросить до 3 бесплатных правок на каждом этапе разработки.</p>
-                <p>5.2. В случае если результат не удовлетворит Заказчика после финальной сдачи, Исполнитель возвращает 100% предоплаты.</p>
-                <p>5.3. Гарантия на работоспособность предоставленных решений — 30 дней с момента сдачи.</p>
-                <p>5.4. В период гарантии Исполнитель бесплатно устраняет выявленные недостатки.</p>
+                <p>5.2. В случае если результат не удовлетворит Заказчика после финальной сдачи, Исполнитель возвращает 100% стоимости.</p>
+                <p>5.3. Гарантия на работоспособность — 30 дней с момента сдачи.</p>
             </div>
 
             <div class="doc-section">
                 <h3>6. Права и обязанности сторон</h3>
-                <p><strong>Исполнитель обязуется:</strong></p>
-                <ul>
-                    <li>Выполнить работы в установленные сроки</li>
-                    <li>Предоставить результат, соответствующий техническому заданию</li>
-                    <li>Обеспечить конфиденциальность данных Заказчика</li>
-                    <li>Предоставить техническую поддержку в течение гарантийного срока</li>
-                </ul>
-                <p><strong>Заказчик обязуется:</strong></p>
-                <ul>
-                    <li>Предоставить все необходимые материалы в срок</li>
-                    <li>Своевременно произвести оплату</li>
-                    <li>Согласовать результат на каждом этапе</li>
-                    <li>Не передавать доступы третьим лицам без согласия Исполнителя</li>
-                </ul>
+                <p><strong>Исполнитель обязуется:</strong> выполнить работы в срок, предоставить результат, обеспечить конфиденциальность, предоставить поддержку в гарантийный период.</p>
+                <p><strong>Заказчик обязуется:</strong> предоставить материалы в срок, произвести оплату, согласовать результат, не передавать доступы третьим лицам.</p>
             </div>
 
             <div class="doc-section">
                 <h3>7. Конфиденциальность</h3>
-                <p>7.1. Стороны обязуются не раскрывать третьим лицам информацию, полученную в ходе выполнения настоящего договора.</p>
-                <p>7.2. Исключение составляет информация, обязательная к раскрытию в соответствии с действующим законодательством РФ.</p>
+                <p>Стороны обязуются не раскрывать третьим лицам информацию, полученную в ходе выполнения договора. Исключение — информация, обязательная к раскрытию по законодательству РФ.</p>
             </div>
 
             <div class="doc-section">
                 <h3>8. Ответственность сторон</h3>
-                <p>8.1. Исполнитель несёт ответственность за качество оказанных услуг в соответствии с действующим законодательством РФ.</p>
-                <p>8.2. В случае нарушения сроков по вине Исполнителя, Заказчик вправе потребовать скидку в размере 5% от стоимости работ за каждый день просрочки.</p>
-                <p>8.3. В случае нарушения сроков по вине Заказчика (непредоставление материалов, задержка согласования), сроки переносятся на соответствующее количество дней.</p>
+                <p>8.1. Исполнитель несёт ответственность за качество оказанных услуг в соответствии с законодательством РФ.</p>
+                <p>8.2. В случае нарушения сроков по вине Исполнителя — скидка 5% от стоимости за каждый день просрочки.</p>
+                <p>8.3. В случае нарушения сроков по вине Заказчика — сроки переносятся на соответствующее количество дней.</p>
             </div>
 
             <div class="doc-section">
                 <h3>9. Разрешение споров</h3>
-                <p>9.1. Все споры, возникающие между сторонами, разрешаются путём переговоров.</p>
-                <p>9.2. В случае невозможности достижения согласия, спор передаётся на рассмотрение в суд по месту нахождения Исполнителя.</p>
+                <p>Все споры разрешаются путём переговоров. При невозможности достижения согласия — суд по месту нахождения Исполнителя.</p>
             </div>
 
             <div class="doc-section">
                 <h3>10. Заключительные положения</h3>
-                <p>10.1. Настоящий договор вступает в силу с момента его подписания обеими сторонами.</p>
-                <p>10.2. Действие договора прекращается после полного выполнения сторонами своих обязательств.</p>
-                <p>10.3. По всем вопросам, не урегулированным настоящим договором, стороны руководствуются действующим законодательством РФ.</p>
-                <p>10.4. Настоящий договор составлен в двух экземплярах, имеющих одинаковую юридическую силу, по одному для каждой из сторон.</p>
+                <p>Договор вступает в силу с момента подписания. Действие прекращается после полного выполнения обязательств. По вопросам, не урегулированным договором, стороны руководствуются законодательством РФ. Договор составлен в двух экземплярах.</p>
             </div>
 
             <div class="doc-signatures">
                 <div class="signature-block">
                     <h4>Исполнитель</h4>
-                    <p style="color:#9ca3af;font-size:0.9rem;">Ленгардт Дмитрий Евгеньевич</p>
-                    <div class="signature-line" id="executorSign">Подпись: ____________________</div>
-                    <p class="signature-label">Дата: «____» _____________ 202__ г.</p>
+                    <p>Ленгардт Дмитрий Евгеньевич</p>
+                    <div class="signature-line">Подпись: ____________________</div>
+                    <p class="sig-label">Дата: «____» _____________ 202__ г.</p>
                 </div>
                 <div class="signature-block">
                     <h4>Заказчик</h4>
-                    <p style="color:#9ca3af;font-size:0.9rem;">________________________________</p>
-                    <div class="signature-line" id="clientSign">Подпись: ____________________</div>
-                    <p class="signature-label">Дата: «____» _____________ 202__ г.</p>
+                    <p>________________________________</p>
+                    <div class="signature-line">Подпись: ____________________</div>
+                    <p class="sig-label">Дата: «____» _____________ 202__ г.</p>
                 </div>
             </div>
 
             <div class="doc-footer">
-                <p>BizkitDigital | ИНН: 420544798477 | +7 (951) 592-26-18</p>
-                <p style="margin-top:0.5rem;">bizkitdigital.vercel.app</p>
-                <button class="print-btn" onclick="window.print()">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                    Печать документа
-                </button>
+                <p>BizkitDigital | ИНН: 420544798477 | +7 (951) 592-26-18 | bizkitdigital.vercel.app</p>
             </div>
         </div>
-    </main>
 
-    <script src="/chat.js"></script>
+        <div class="print-btn-wrap no-print">
+            <button class="print-btn" onclick="window.print()">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                Печать документа
+            </button>
+        </div>
+    </div>
 </body>
 </html>
