@@ -186,15 +186,6 @@ bot.callbackQuery('cs_order', async (ctx) => {
 });
 
 // === ORDER FLOW ===
-bot.callbackQuery(/^order_(.+)$/, async (ctx) => {
-    try {
-        await ctx.answerCallbackQuery();
-        const pkgKey = ctx.match[1];
-        userState.set(ctx.from.id, { step: 'name', pkg: pkgKey });
-        await ctx.reply('Как вас зовут?');
-    } catch (e) {}
-});
-
 bot.callbackQuery('order_confirm', async (ctx) => {
     try {
         await ctx.answerCallbackQuery();
@@ -215,14 +206,11 @@ bot.callbackQuery('order_confirm', async (ctx) => {
             orderText = `🛒 НОВЫЙ ЗАКАЗ\n\n👤 Имя: ${state.name}\n📱 Телефон: ${state.phone}\n💬 Telegram: @${user.username || user.first_name}\n\n📦 Пакет: «${pkg.name}»\n💰 Цена: ${pkg.price}`;
         }
 
-        // Send to owner
         if (OWNER_CHAT_ID) {
-            try {
-                await ctx.api.sendMessage(OWNER_CHAT_ID, orderText);
-            } catch (e) { console.error('Send order error:', e); }
+            try { await ctx.api.sendMessage(OWNER_CHAT_ID, orderText); } catch (e) {}
         }
 
-        await ctx.reply('✅ Заявка отправлена!\n\nДима свяжется с вами в ближайшее время для обсуждения деталей и оплаты.\n\n💬 Или напишите напрямую: @vxrxntsxff');
+        await ctx.reply('✅ Заявка отправлена!\n\nДима свяжется с вами в ближайшее время.\n\n💬 Или напишите: @vxrxntsxff');
         userState.delete(ctx.from.id);
     } catch (e) {}
 });
@@ -232,6 +220,15 @@ bot.callbackQuery('order_cancel', async (ctx) => {
         await ctx.answerCallbackQuery();
         userState.delete(ctx.from.id);
         await ctx.reply('❌ Заказ отменён.', mainKB());
+    } catch (e) {}
+});
+
+bot.callbackQuery(/^order_(.+)$/, async (ctx) => {
+    try {
+        await ctx.answerCallbackQuery();
+        const pkgKey = ctx.match[1];
+        userState.set(ctx.from.id, { step: 'name', pkg: pkgKey });
+        await ctx.reply('Как вас зовут?');
     } catch (e) {}
 });
 
