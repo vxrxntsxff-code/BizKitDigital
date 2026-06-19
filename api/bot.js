@@ -115,11 +115,11 @@ function servicesInlineKB() {
 
 function orderKeyboard(pkgKey) {
     return new InlineKeyboard()
-        .text('🛒 Заказать', { url: `https://bizkitdigital.vercel.app/#pricing` })
+        .url('🛒 Заказать', 'https://bizkitdigital.vercel.app/#pricing')
         .row()
-        .text('💬 Написать Диме', { url: 'https://t.me/vxrxntsxff' })
+        .url('💬 Написать Диме', 'https://t.me/vxrxntsxff')
         .row()
-        .text('← Назад к услугам', 'back_to_services');
+        .text('← Назад к тарифам', 'back_to_services');
 }
 
 function packagesKeyboard() {
