@@ -162,7 +162,7 @@ bot.command('start', async (ctx) => {
     const deepLink = ctx.match;
     if (deepLink && PACKAGES[deepLink]) {
         const text = formatPackage(PACKAGES[deepLink]);
-        await ctx.reply(text, orderKeyboard(deepLink));
+        await ctx.reply(text, { reply_markup: orderKeyboard(deepLink) });
         return;
     }
     await ctx.reply(
@@ -200,7 +200,7 @@ bot.hears('📦 Тарифы', async (ctx) => {
     text += `▪️ «Собрать свой» — от 20 000₽\n   Выбери только то, что нужно\n\n`;
     text += 'Поддержка: от 1 500 ₽/мес\n\n';
     text += 'Выберите тариф чтобы узнать подробности:';
-    await ctx.reply(text, packagesInlineKB());
+    await ctx.reply(text, { reply_markup: packagesInlineKB() });
 });
 
 bot.hears('🛠 Услуги', async (ctx) => {
@@ -275,21 +275,21 @@ bot.hears('💬 Задать вопрос', async (ctx) => {
 bot.callbackQuery('svc_start', async (ctx) => {
     try {
         await ctx.answerCallbackQuery();
-        await ctx.editMessageText(formatPackage(PACKAGES.start) + '\n🛒 Чтобы заказать:', orderKeyboard('start'));
+        await ctx.editMessageText(formatPackage(PACKAGES.start) + '\n🛒 Чтобы заказать:', { reply_markup: orderKeyboard('start') });
     } catch (e) {}
 });
 
 bot.callbackQuery('svc_business', async (ctx) => {
     try {
         await ctx.answerCallbackQuery();
-        await ctx.editMessageText(formatPackage(PACKAGES.business) + '\n🛒 Чтобы заказать:', orderKeyboard('business'));
+        await ctx.editMessageText(formatPackage(PACKAGES.business) + '\n🛒 Чтобы заказать:', { reply_markup: orderKeyboard('business') });
     } catch (e) {}
 });
 
 bot.callbackQuery('svc_premium', async (ctx) => {
     try {
         await ctx.answerCallbackQuery();
-        await ctx.editMessageText(formatPackage(PACKAGES.premium) + '\n🛒 Чтобы заказать:', orderKeyboard('premium'));
+        await ctx.editMessageText(formatPackage(PACKAGES.premium) + '\n🛒 Чтобы заказать:', { reply_markup: orderKeyboard('premium') });
     } catch (e) {}
 });
 
@@ -307,7 +307,7 @@ bot.callbackQuery('svc_custom', async (ctx) => {
             '  Домен — 2 000₽\n\n' +
             '💡 Если нужен весь функционал — дешевле взять пакет «Премиум» за 50 000₽\n\n' +
             '🛒 Чтобы заказать:';
-        await ctx.editMessageText(text, orderKeyboard('custom'));
+        await ctx.editMessageText(text, { reply_markup: orderKeyboard('custom') });
     } catch (e) {}
 });
 
@@ -320,7 +320,7 @@ bot.callbackQuery('svc_support', async (ctx) => {
         for (const f of SUPPORT_INFO.features) text += `  ✓ ${f}\n`;
         text += '\nОплата ежемесячно. Отказ — в любой момент.';
         text += '\n\n🛒 Чтобы подключить:';
-        await ctx.editMessageText(text, orderKeyboard('support'));
+        await ctx.editMessageText(text, { reply_markup: orderKeyboard('support') });
     } catch (e) {}
 });
 
@@ -335,7 +335,7 @@ bot.callbackQuery('back_to_services', async (ctx) => {
         }
         text += `▪️ «Собрать свой» — от 20 000₽\n   Выбери только то, что нужно\n\n`;
         text += 'Подробнее — выберите:';
-        await ctx.editMessageText(text, packagesInlineKB());
+        await ctx.editMessageText(text, { reply_markup: packagesInlineKB() });
     } catch (e) {}
 });
 
@@ -343,21 +343,21 @@ bot.callbackQuery('back_to_services', async (ctx) => {
 bot.callbackQuery('pkg_start', async (ctx) => {
     try {
         await ctx.answerCallbackQuery();
-        await ctx.editMessageText(formatPackage(PACKAGES.start) + '\n🛒 Чтобы заказать:', orderKeyboard('start'));
+        await ctx.editMessageText(formatPackage(PACKAGES.start) + '\n🛒 Чтобы заказать:', { reply_markup: orderKeyboard('start') });
     } catch (e) {}
 });
 
 bot.callbackQuery('pkg_business', async (ctx) => {
     try {
         await ctx.answerCallbackQuery();
-        await ctx.editMessageText(formatPackage(PACKAGES.business) + '\n🛒 Чтобы заказать:', orderKeyboard('business'));
+        await ctx.editMessageText(formatPackage(PACKAGES.business) + '\n🛒 Чтобы заказать:', { reply_markup: orderKeyboard('business') });
     } catch (e) {}
 });
 
 bot.callbackQuery('pkg_premium', async (ctx) => {
     try {
         await ctx.answerCallbackQuery();
-        await ctx.editMessageText(formatPackage(PACKAGES.premium) + '\n🛒 Чтобы заказать:', orderKeyboard('premium'));
+        await ctx.editMessageText(formatPackage(PACKAGES.premium) + '\n🛒 Чтобы заказать:', { reply_markup: orderKeyboard('premium') });
     } catch (e) {}
 });
 
@@ -375,7 +375,7 @@ bot.callbackQuery('pkg_custom', async (ctx) => {
             '  Домен — 2 000₽\n\n' +
             '💡 Если нужен весь функционал — дешевле взять «Премиум» за 50 000₽\n\n' +
             '🛒 Чтобы заказать:';
-        await ctx.editMessageText(text, orderKeyboard('custom'));
+        await ctx.editMessageText(text, { reply_markup: orderKeyboard('custom') });
     } catch (e) {}
 });
 
@@ -388,7 +388,7 @@ bot.callbackQuery('pkg_support', async (ctx) => {
         for (const f of SUPPORT_INFO.features) text += `  ✓ ${f}\n`;
         text += '\nОплата ежемесячно. Отказ — в любой момент.';
         text += '\n\n🛒 Чтобы подключить:';
-        await ctx.editMessageText(text, orderKeyboard('support'));
+        await ctx.editMessageText(text, { reply_markup: orderKeyboard('support') });
     } catch (e) {}
 });
 
@@ -403,7 +403,7 @@ bot.callbackQuery('back_to_packages', async (ctx) => {
         }
         text += `▪️ «Собрать свой» — от 20 000₽\n   Выбери только то, что нужно\n\n`;
         text += 'Подробнее — выберите:';
-        await ctx.editMessageText(text, { reply_markup: packagesKeyboard().reply_markup });
+        await ctx.editMessageText(text, { reply_markup: packagesKeyboard() });
     } catch (e) {}
 });
 
