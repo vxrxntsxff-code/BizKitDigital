@@ -4,9 +4,6 @@ const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const WEBHOOK_URL = 'https://bizkitdigital.vercel.app/api/bot';
 
 module.exports = async (req, res) => {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'POST only' });
-    }
 
     if (!BOT_TOKEN) {
         return res.status(500).json({ error: 'TELEGRAM_BOT_TOKEN not set' });
