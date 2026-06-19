@@ -131,6 +131,19 @@ function packagesKeyboard() {
         .text('Техподдержка', 'pkg_support');
 }
 
+function packagesInlineKB() {
+    return new InlineKeyboard()
+        .text('Старт — 20 000 ₽', 'pkg_start')
+        .row()
+        .text('Бизнес — 35 000 ₽ ⭐', 'pkg_business')
+        .row()
+        .text('Премиум — 50 000 ₽', 'pkg_premium')
+        .row()
+        .text('Собрать свой тариф', 'pkg_custom')
+        .row()
+        .text('Техподдержка', 'pkg_support');
+}
+
 function formatPackage(pkg) {
     let text = `📦 Пакет «${pkg.name}»${pkg.popular ? ' ⭐' : ''}\n\n`;
     text += `Цена: ${pkg.price} (разовый)\n`;
@@ -182,20 +195,21 @@ bot.hears('📦 Тарифы', async (ctx) => {
     }
     text += `▪️ «Собрать свой» — от 20 000₽\n   Выбери только то, что нужно\n\n`;
     text += 'Поддержка: от 1 500 ₽/мес\n\n';
-    text += 'Подробнее — выберите:';
-    await ctx.reply(text, { reply_markup: packagesKeyboard().reply_markup });
+    text += 'Выберите тариф чтобы узнать подробности:';
+    await ctx.reply(text, { reply_markup: packagesInlineKB().reply_markup });
 });
 
 bot.hears('🛠 Услуги', async (ctx) => {
     await ctx.reply(
         '🛠 Что мы делаем:\n\n' +
-        '🌐 Лендинги и сайты-визитки\n' +
-        '🤖 Telegram-боты для записи 24/7\n' +
-        '💬 AI-чат на сайте\n' +
-        '⚙️ Интеграции: CRM, Google Таблицы, ЮKassa\n' +
-        '🛠 Поддержка после запуска\n\n' +
-        'Выберите тариф чтобы узнать подробности и заказать:',
-        { reply_markup: servicesInlineKB() }
+        '🌐 Лендинги и сайты-визитки — от 14 000₽\n' +
+        '🤖 Telegram-боты для записи 24/7 — 12 000₽\n' +
+        '💬 AI-чат на сайте — 10 000₽\n' +
+        '⚙️ Интеграции: CRM, Google Таблицы — 10 000₽\n' +
+        '💳 Онлайн-оплата (ЮKassa) — 12 000₽\n' +
+        '🛠 Поддержка — от 1 500₽/мес\n\n' +
+        '💡 Нужен весь функционал? Лучше взять пакет!\n' +
+        'Нажмите 📦 Тарифы чтобы выбрать пакет.'
     );
 });
 
@@ -309,16 +323,15 @@ bot.callbackQuery('svc_support', async (ctx) => {
 bot.callbackQuery('back_to_services', async (ctx) => {
     try {
         await ctx.answerCallbackQuery();
-        await ctx.editMessageText(
-            '🛠 Что мы делаем:\n\n' +
-            '🌐 Лендинги и сайты-визитки\n' +
-            '🤖 Telegram-боты для записи 24/7\n' +
-            '💬 AI-чат на сайте\n' +
-            '⚙️ Интеграции: CRM, Google Таблицы, ЮKassa\n' +
-            '🛠 Поддержка после запуска\n\n' +
-            'Выберите тариф чтобы узнать подробности и заказать:',
-            { reply_markup: servicesInlineKB() }
-        );
+        let text = '📦 Наши тарифы:\n\n';
+        for (const [key, pkg] of Object.entries(PACKAGES)) {
+            if (key === 'custom') continue;
+            const popular = pkg.popular ? ' ⭐ Популярный' : '';
+            text += `▪️ «${pkg.name}» — ${pkg.price}${popular}\n   ${pkg.description}\n\n`;
+        }
+        text += `▪️ «Собрать свой» — от 20 000₽\n   Выбери только то, что нужно\n\n`;
+        text += 'Подробнее — выберите:';
+        await ctx.editMessageText(text, { reply_markup: packagesInlineKB().reply_markup });
     } catch (e) {}
 });
 
@@ -341,6 +354,24 @@ bot.callbackQuery('pkg_premium', async (ctx) => {
     try {
         await ctx.answerCallbackQuery();
         await ctx.editMessageText(formatPackage(PACKAGES.premium) + '\n🛒 Чтобы заказать:', { reply_markup: orderKeyboard('premium') });
+    } catch (e) {}
+});
+
+bot.callbackQuery('pkg_custom', async (ctx) => {
+    try {
+        await ctx.answerCallbackQuery();
+        const text =
+            '🔧 Собрать свой тариф\n\n' +
+            'Выберите только то, что нужно:\n\n' +
+            '  Лендинг — от 14 000₽\n' +
+            '  Telegram-бот — 12 000₽\n' +
+            '  AI-чат — 10 000₽\n' +
+            '  Онлайн-оплата — 12 000₽\n' +
+            '  CRM-интеграция — 10 000₽\n' +
+            '  Домен — 2 000₽\n\n' +
+            '💡 Если нужен весь функционал — дешевле взять «Премиум» за 50 000₽\n\n' +
+            '🛒 Чтобы заказать:';
+        await ctx.editMessageText(text, { reply_markup: orderKeyboard('custom') });
     } catch (e) {}
 });
 
