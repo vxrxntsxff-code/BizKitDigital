@@ -1136,13 +1136,26 @@
             document.getElementById('paymentAmount').textContent = amount.toLocaleString('ru-RU') + ' ₽';
             document.getElementById('paymentForm').style.display = 'block';
             document.getElementById('paymentForm').reset();
-            document.getElementById('paymentModal').style.display = 'flex';
+            const modal = document.getElementById('paymentModal');
+            modal.style.display = 'flex';
+            modal.classList.remove('show');
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    modal.classList.add('show');
+                });
+            });
             document.getElementById('chatWidget').style.display = 'none';
+            // Set phone to +7
+            document.getElementById('payPhone').value = '+7';
         }
 
         function closePayment() {
-            document.getElementById('paymentModal').style.display = 'none';
-            document.getElementById('chatWidget').style.display = '';
+            const modal = document.getElementById('paymentModal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.getElementById('chatWidget').style.display = '';
+            }, 300);
         }
 
         document.getElementById('paymentModal').addEventListener('click', function(e) {
