@@ -46,7 +46,7 @@ function tariffsKB() {
 function orderKB(pkg) {
     return new InlineKeyboard()
         .text('🛒 Оформить заказ', 'do_order_' + pkg).row()
-        .text('💬 Написать Диме', { url: 'https://t.me/vxrxntsxff' }).row()
+        .url('💬 Написать Диме', 'https://t.me/vxrxntsxff').row()
         .text('← Назад к тарифам', 'back_tariffs');
 }
 
