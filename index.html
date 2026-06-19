@@ -1145,13 +1145,20 @@
                 });
             });
             document.getElementById('chatWidget').style.display = 'none';
-            // Set phone to +7
             document.getElementById('payPhone').value = '+7';
+            document.body.style.overflow = 'hidden';
+            // Prevent iOS zoom on input focus
+            const vp = document.querySelector('meta[name="viewport"]');
+            if (vp) vp.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
         }
 
         function closePayment() {
             const modal = document.getElementById('paymentModal');
             modal.classList.remove('show');
+            document.body.style.overflow = '';
+            // Restore viewport zoom
+            const vp = document.querySelector('meta[name="viewport"]');
+            if (vp) vp.setAttribute('content', 'width=device-width, initial-scale=1.0');
             setTimeout(() => {
                 modal.style.display = 'none';
                 document.getElementById('chatWidget').style.display = '';
