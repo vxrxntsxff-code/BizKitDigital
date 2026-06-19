@@ -108,7 +108,7 @@
 </head>
 <body class="grid-bg">
 
-    <a href="#main-content" class="sr-only" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:9999;background:#8b5cf6;color:#fff;padding:12px 24px;font-weight:600;text-decoration:none;border-radius:0 0 8px 8px;" onfocus="this.style.left='50%';this.style.transform='translateX(-50%)';this.style.top='0'" onblur="this.style.left='-9999px'">Перейти к содержимому</a>
+    <a href="#services" class="sr-only" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:9999;background:#8b5cf6;color:#fff;padding:12px 24px;font-weight:600;text-decoration:none;border-radius:0 0 8px 8px;" onfocus="this.style.left='50%';this.style.transform='translateX(-50%)';this.style.top='0'" onblur="this.style.left='-9999px'">Перейти к содержимому</a>
 
     <!-- HEADER -->
     <header class="header-blur fixed top-0 left-0 right-0 z-50">
@@ -648,7 +648,7 @@
                         <span class="font-medium pr-4" style="color: #d1d5db; font-size: 17px;">Мне и так хватает клиентов — зачем мне сайт?</span>
                         <svg class="faq-arrow w-5 h-5 text-text-secondary flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                     </button>
-                    <div class="faq-answer-wrap" id="faq-1" role="region" aria-labelledby="faq-1-btn" hidden>
+                    <div class="faq-answer-wrap" id="faq-1" role="region" hidden>
                         <div class="faq-answer-inner">
                             <div class="faq-answer-pad text-sm leading-relaxed px-5 pb-5" style="color: #9ca3af;">
                                 79% людей ищут услугу в интернете. Если вас там нет — вы теряете 3 из 4 потенциальных клиентов. Сайт не заменяет сарафан, но добавляет новый канал, который работает, пока вы спите. А Telegram-бот записывает клиентов даже ночью.
@@ -721,7 +721,7 @@
                     <div class="faq-answer-wrap" id="faq-6" role="region" hidden>
                         <div class="faq-answer-inner">
                             <div class="faq-answer-pad text-sm leading-relaxed px-5 pb-5" style="color: #9ca3af;">
-                                Да. Заключаем договор на оказание услуг. Оплата — 50% предоплата, 50% после сдачи. Все условия фиксируем в документе.
+                                Да. Заключаем договор на оказание услуг. Оплата — полная через ЮKassa при оформлении заказа. Все условия фиксируем в документе.
                             </div>
                         </div>
                     </div>
@@ -793,7 +793,7 @@
             <div class="cta-card rounded-3xl p-12 text-center relative overflow-hidden">
                 <div class="relative z-10">
                     <h2 class="text-3xl md:text-4xl font-bold mb-4">Готов обсудить свой проект?</h2>
-                    <p class="text-text-secondary text-lg mb-8">Осталось 2 места на эту неделю. Напиши сейчас — запишем на бесплатную консультацию</p>
+                    <p class="text-text-secondary text-lg mb-8">                                Осталось 3 места на эту неделю Напиши сейчас — запишем на бесплатную консультацию</p>
                     <a href="https://t.me/BizkitDigital_bot" target="_blank" class="glow-btn inline-flex items-center gap-2 text-white font-semibold px-8 py-4 rounded-lg text-lg transition-all" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
                         Написать в Telegram
@@ -1303,6 +1303,7 @@
         });
 
         // Countdown timer (ends Sunday 23:59)
+        let countdownInterval = null;
         function updateCountdown() {
             const now = new Date();
             const dayOfWeek = now.getDay();
@@ -1316,6 +1317,7 @@
                 document.getElementById('cd-hours').textContent = '00';
                 document.getElementById('cd-mins').textContent = '00';
                 document.getElementById('cd-secs').textContent = '00';
+                if (countdownInterval) clearInterval(countdownInterval);
                 return;
             }
             const d = Math.floor(diff / 86400000);
@@ -1328,7 +1330,7 @@
             document.getElementById('cd-secs').textContent = String(s).padStart(2, '0');
         }
         updateCountdown();
-        setInterval(updateCountdown, 1000);
+        countdownInterval = setInterval(updateCountdown, 1000);
 
         // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(a => {

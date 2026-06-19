@@ -117,7 +117,7 @@ function sendTelegram(text) {
     const chatId = process.env.TELEGRAM_GROUP_CHAT_ID;
 
     if (!token || !chatId) {
-        return Promise.resolve({ error: 'missing env vars', token: !!token, chatId: !!chatId });
+        return Promise.resolve({ error: 'Telegram not configured' });
     }
 
     const payload = JSON.stringify({

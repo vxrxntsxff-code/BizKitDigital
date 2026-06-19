@@ -48,14 +48,6 @@ module.exports = async (req, res) => {
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
         return res.status(400).json({ error: 'Missing or invalid name' });
     }
-    if (!phone || typeof phone !== 'string') {
-        return res.status(400).json({ error: 'Missing or invalid phone' });
-    }
-
-    const phoneDigits = phone.replace(/\D/g, '');
-    if (phoneDigits.length < 10 || phoneDigits.length > 15) {
-        return res.status(400).json({ error: 'Invalid phone number' });
-    }
 
     const token = process.env.TELEGRAM_BOT_TOKEN;
     const chatId = process.env.TELEGRAM_GROUP_CHAT_ID;

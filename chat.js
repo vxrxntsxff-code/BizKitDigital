@@ -57,17 +57,25 @@ async function submitLead() {
     if (!name) { addMsg('Пожалуйста, укажите имя.'); return; }
     if (!telegram && !email) { addMsg('Укажите Telegram или Email, чтобы мы могли связаться.'); return; }
     document.getElementById('leadFormSection').style.display = 'none';
-    addMsg('Заявка отправлена! ' + name + ', мы свяжемся с вами в ближайшее время.');
     try {
-        await fetch('/api/send-message', {
+        const resp = await fetch('/api/send-message', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: name, telegram: telegram, email: email, service: service || 'не указана', message: 'Заявка из AI-чата' })
+            body: JSON.stringify({ name: name, phone: '', telegram: telegram, email: email, service: service || 'не указана', message: 'Заявка из AI-чата' })
         });
-    } catch(e) {}
+        const data = await resp.json();
+        if (data.status === 'ok') {
+            addMsg('Заявка отправлена! ' + name + ', мы свяжемся с вами.');
+        } else {
+            addMsg('Не удалось отправить. Напишите в Telegram @vxrxntsxff.');
+        }
+    } catch(e) {
+        addMsg('Ошибка сети. Напишите в Telegram @vxrxntsxff.');
+    }
 }
 
 let chatHistory = [];
+let sending = false;
 
 function getLocalAnswer(q) {
     const lower = q.toLowerCase();
@@ -162,9 +170,11 @@ function getLocalAnswer(q) {
 }
 
 async function sendMessage() {
+    if (sending) return;
     const input = document.getElementById('chatInput');
     const text = input.value.trim();
     if (!text) return;
+    sending = true;
     addMsg(text, true);
     input.value = '';
     input.style.height = 'auto';
@@ -201,6 +211,7 @@ async function sendMessage() {
         hideTyping();
         addMsg('Сейчас высокая нагрузка. Попробуйте переформулировать вопрос или напишите в Telegram @vxrxntsxff.');
     }
+    sending = false;
 }
 
 let msgCounter = 0;
