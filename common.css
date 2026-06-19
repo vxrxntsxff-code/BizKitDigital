@@ -81,7 +81,8 @@ nav a:hover {
         margin: 0;
         padding: 12px 0;
         width: 100%;
-        border-bottom: 1px solid rgba(34, 34, 34, 0.5);
+        border-bottom: none !important;
+        text-decoration: none !important;
     }
     nav a:last-child { border-bottom: none; }
 }
@@ -90,7 +91,9 @@ nav a:hover {
 .nav-link {
     color: #9ca3af;
     font-size: 0.875rem;
-    text-decoration: none;
+    text-decoration: none !important;
+    text-decoration-line: none !important;
+    -webkit-text-decoration: none !important;
     position: relative;
     padding-bottom: 2px;
     transition: color 0.25s;
@@ -103,7 +106,7 @@ nav a:hover {
     background: #8b5cf6;
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.nav-link:hover { color: #fff; text-decoration: none; }
+.nav-link:hover { color: #fff; text-decoration: none !important; text-decoration-line: none !important; }
 .nav-link:hover::after { width: 100%; }
 .nav-link.active {
     color: #fff;
