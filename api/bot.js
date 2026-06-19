@@ -174,6 +174,10 @@ bot.command('start', async (ctx) => {
     );
 });
 
+bot.command('ver', async (ctx) => {
+    await ctx.reply('v2.1 — inline buttons in tariffs');
+});
+
 bot.command('help', async (ctx) => {
     await ctx.reply(
         'ℹ️ Помощь:\n\n' +
@@ -187,7 +191,7 @@ bot.command('help', async (ctx) => {
 });
 
 bot.hears('📦 Тарифы', async (ctx) => {
-    let text = '📦 Наши тарифы:\n\n';
+    let text = '📦 Наши тарифы (v2.1):\n\n';
     for (const [key, pkg] of Object.entries(PACKAGES)) {
         if (key === 'custom') continue;
         const popular = pkg.popular ? ' ⭐ Популярный' : '';
