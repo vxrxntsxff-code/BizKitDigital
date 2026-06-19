@@ -1130,6 +1130,7 @@
         // PAYMENT MODAL
         let currentPayment = { name: '', amount: 0 };
 
+        let scrollY = 0;
         function openPayment(name, amount) {
             currentPayment = { name, amount };
             document.getElementById('paymentPackageName').textContent = 'Пакет «' + name + '»';
@@ -1146,8 +1147,12 @@
             });
             document.getElementById('chatWidget').style.display = 'none';
             document.getElementById('payPhone').value = '+7';
-            document.body.style.overflow = 'hidden';
-            // Prevent iOS zoom on input focus
+            // Lock scroll
+            scrollY = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = '-' + scrollY + 'px';
+            document.body.style.width = '100%';
+            // Prevent iOS zoom
             const vp = document.querySelector('meta[name="viewport"]');
             if (vp) vp.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
         }
@@ -1155,8 +1160,12 @@
         function closePayment() {
             const modal = document.getElementById('paymentModal');
             modal.classList.remove('show');
-            document.body.style.overflow = '';
-            // Restore viewport zoom
+            // Unlock scroll
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            window.scrollTo(0, scrollY);
+            // Restore viewport
             const vp = document.querySelector('meta[name="viewport"]');
             if (vp) vp.setAttribute('content', 'width=device-width, initial-scale=1.0');
             setTimeout(() => {
@@ -1240,36 +1249,34 @@
                 digits = digits.substring(1);
             }
             digits = digits.substring(0, 10);
-            let result = '+7';
-            if (digits.length > 0) result += ' (' + digits.substring(0, Math.min(3, digits.length));
-            if (digits.length >= 3) result += ') ' + digits.substring(3, Math.min(6, digits.length));
-            if (digits.length >= 6) result += '-' + digits.substring(6, Math.min(8, digits.length));
-            if (digits.length >= 8) result += '-' + digits.substring(8, 10);
-            return result;
+            if (!digits) return '+7';
+            let r = '+7';
+            if (digits.length > 0) r += ' (' + digits.substring(0, Math.min(3, digits.length));
+            if (digits.length >= 3) r += ') ' + digits.substring(3, Math.min(6, digits.length));
+            if (digits.length >= 6) r += '-' + digits.substring(6, Math.min(8, digits.length));
+            if (digits.length >= 8) r += '-' + digits.substring(8, 10);
+            return r;
         }
         phoneInput.value = '+7';
         phoneInput.addEventListener('focus', function() {
-            if (this.value === '+7' || this.value === '') this.value = '+7';
+            if (!this.value || this.value === '+7') this.value = '+7';
         });
-        phoneInput.addEventListener('input', function(e) {
-            let pos = this.selectionStart;
-            let oldLen = this.value.length;
-            this.value = formatPhone(this.value);
-            let diff = this.value.length - oldLen;
-            this.setSelectionRange(pos + diff, pos + diff);
-        });
+        // Only use keydown for formatting — avoids input event conflicts on iOS
         phoneInput.addEventListener('keydown', function(e) {
             if (e.key === 'Backspace') {
                 e.preventDefault();
-                let digits = this.value.replace(/\D/g, '');
-                if (digits.length <= 1) {
-                    this.value = '+7';
-                    return;
-                }
-                // Remove last digit
-                digits = digits.substring(0, digits.length - 1);
-                if (digits.length > 0 && (digits[0] === '7' || digits[0] === '8')) digits = digits.substring(1);
-                this.value = formatPhone('+7' + digits);
+                let d = this.value.replace(/\D/g, '');
+                if (d.length <= 1) { this.value = '+7'; return; }
+                d = d.substring(0, d.length - 1);
+                if (d.length > 0 && (d[0] === '7' || d[0] === '8')) d = d.substring(1);
+                this.value = formatPhone('+7' + d);
+            } else if (/^\d$/.test(e.key)) {
+                e.preventDefault();
+                let d = this.value.replace(/\D/g, '');
+                if (d.length > 0 && (d[0] === '7' || d[0] === '8')) d = d.substring(1);
+                if (d.length >= 10) return; // max 10 digits
+                d += e.key;
+                this.value = formatPhone('+7' + d);
             }
         });
 
