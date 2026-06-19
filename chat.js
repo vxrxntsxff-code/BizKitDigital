@@ -3,27 +3,38 @@ let chatOpen = false;
 
 function toggleChat() {
     const win = document.getElementById('chatWindow');
-    const iconOpen = document.getElementById('chatIconOpen');
-    const iconClose = document.getElementById('chatIconClose');
-    const toggleBtn = document.getElementById('chatToggleBtn');
+    const btn = document.getElementById('chatToggleBtn');
+    const widget = document.getElementById('chatWidget');
+
     if (chatOpen) {
-        win.classList.add('closing');
-        setTimeout(() => { win.classList.add('hidden'); win.classList.remove('closing'); }, 200);
-        iconOpen.style.display = '';
-        iconClose.style.display = 'none';
-        if (toggleBtn) {
-            toggleBtn.setAttribute('aria-expanded', 'false');
-            toggleBtn.setAttribute('aria-label', 'Открыть чат');
-        }
+        // Close: shrink window, show button
+        win.style.transform = 'translateY(20px) scale(0.95)';
+        win.style.opacity = '0';
+        btn.style.transform = 'scale(1)';
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+        setTimeout(() => {
+            win.classList.add('hidden');
+            btn.style.display = 'flex';
+        }, 250);
+        btn.setAttribute('aria-expanded', 'false');
+        btn.setAttribute('aria-label', 'Открыть чат');
     } else {
-        win.classList.remove('hidden', 'closing');
-        iconOpen.style.display = 'none';
-        iconClose.style.display = '';
-        document.getElementById('chatInput').focus();
-        if (toggleBtn) {
-            toggleBtn.setAttribute('aria-expanded', 'true');
-            toggleBtn.setAttribute('aria-label', 'Закрыть чат');
-        }
+        // Open: hide button, expand window from button position
+        btn.style.transform = 'scale(0)';
+        btn.style.opacity = '0';
+        btn.style.pointerEvents = 'none';
+        win.classList.remove('hidden');
+        // Force reflow then animate
+        win.offsetHeight;
+        win.style.transform = 'translateY(0) scale(1)';
+        win.style.opacity = '1';
+        setTimeout(() => {
+            btn.style.display = 'none';
+            document.getElementById('chatInput').focus();
+        }, 250);
+        btn.setAttribute('aria-expanded', 'true');
+        btn.setAttribute('aria-label', 'Закрыть чат');
     }
     chatOpen = !chatOpen;
 }
@@ -144,11 +155,11 @@ function addMsg(text, isUser = false) {
     d.style.alignItems = 'flex-start';
     if (isUser) {
         d.style.flexDirection = 'row-reverse';
-        d.innerHTML = '<div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#3b82f6,#2563eb);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);border-radius:14px 14px 4px 14px;padding:10px 14px;max-width:320px;"><p style="font-size:13px;color:#fff;line-height:1.5;margin:0;word-wrap:break-word;">' + text.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p></div>';
+        d.innerHTML = '<div style="width:28px;height:28px;border-radius:8px;background:#3b82f6;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div style="background:#8b5cf6;border-radius:14px 14px 4px 14px;padding:10px 14px;max-width:280px;"><p style="font-size:13px;color:#fff;line-height:1.5;margin:0;word-wrap:break-word;">' + text.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p></div>';
     } else {
         msgCounter++;
         const mid = 'msg-' + msgCounter;
-        d.innerHTML = '<div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="rgba(255,255,255,0.8)"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="rgba(255,255,255,0.3)"/><rect x="3" y="14" width="7" height="7" rx="1.5" fill="rgba(255,255,255,0.3)"/><rect x="14" y="14" width="7" height="7" rx="1.5" fill="rgba(255,255,255,0.6)"/></svg></div><div><div style="background:#1a1a1e;border:1px solid #252528;border-radius:14px 14px 14px 4px;padding:10px 14px;max-width:320px;"><p style="font-size:13px;color:#d1d5db;line-height:1.5;margin:0;word-wrap:break-word;">' + text.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p></div><div id="'+mid+'" style="display:flex;gap:4px;margin-top:4px;padding-left:2px;"><button onclick="rateMsg(this,\''+mid+'\',1)" style="background:none;border:none;cursor:pointer;font-size:14px;opacity:0.4;transition:opacity 0.2s;" onmouseover="this.style.opacity=\'1\'" onmouseout="if(!this.dataset.rated)this.style.opacity=\'0.4\'">👍</button><button onclick="rateMsg(this,\''+mid+'\',-1)" style="background:none;border:none;cursor:pointer;font-size:14px;opacity:0.4;transition:opacity 0.2s;" onmouseover="this.style.opacity=\'1\'" onmouseout="if(!this.dataset.rated)this.style.opacity=\'0.4\'">👎</button></div></div>';
+        d.innerHTML = '<div style="width:28px;height:28px;border-radius:8px;background:#8b5cf6;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="rgba(255,255,255,0.8)"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="rgba(255,255,255,0.3)"/><rect x="3" y="14" width="7" height="7" rx="1.5" fill="rgba(255,255,255,0.3)"/><rect x="14" y="14" width="7" height="7" rx="1.5" fill="rgba(255,255,255,0.6)"/></svg></div><div><div style="background:#1a1a1e;border:1px solid #252528;border-radius:14px 14px 14px 4px;padding:10px 14px;max-width:280px;"><p style="font-size:13px;color:#d1d5db;line-height:1.5;margin:0;word-wrap:break-word;">' + text.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p></div></div>';
     }
     c.appendChild(d);
     c.scrollTop = c.scrollHeight;
