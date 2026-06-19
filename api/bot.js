@@ -290,6 +290,12 @@ bot.on('message:text', async (ctx) => {
     }
 });
 
+// Catch-all for unknown callbacks (debug)
+bot.on('callback_query:data', async (ctx) => {
+    console.log('Unknown callback:', ctx.callbackQuery.data);
+    await ctx.answerCallbackQuery();
+});
+
 // === STARTUP ===
 module.exports = async (req, res) => {
     if (req.method !== 'POST') return res.status(200).json({ ok: true, v: '3.0' });
