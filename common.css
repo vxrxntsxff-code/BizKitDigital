@@ -957,12 +957,15 @@ a:hover { text-decoration: underline; }
     [style*="grid-template-columns: repeat(3"] > div { padding: 14px 12px !important; }
 
     /* ===== CHAT WIDGET ===== */
-    #chatWindow { width: calc(100vw - 16px) !important; max-width: none !important; right: 8px !important; bottom: 72px !important; border-radius: 14px !important; }
-    #chatToggleBtn { width: 48px !important; height: 48px !important; bottom: 12px !important; right: 12px !important; border-radius: 14px !important; }
+    #chatWindow { width: calc(100vw - 16px) !important; max-width: none !important; right: 8px !important; bottom: 130px !important; border-radius: 14px !important; }
+    #chatToggleBtn { width: 48px !important; height: 48px !important; bottom: 68px !important; right: 12px !important; border-radius: 14px !important; }
+
+    /* ===== STICKY CTA: above chat ===== */
+    .mobile-sticky-cta a { min-height: 44px !important; }
 
     /* ===== PAYMENT MODAL ===== */
     #paymentModal { padding: 0 !important; align-items: flex-start !important; }
-    #paymentModal .rounded-2xl { max-height: none !important; overflow: hidden !important; margin: 0 !important; width: 100% !important; border-radius: 0 0 14px 14px !important; }
+    #paymentModal .rounded-2xl { max-height: 80vh !important; overflow-y: auto !important; margin: 0 !important; width: 100% !important; border-radius: 0 0 14px 14px !important; }
     #paymentModal .flex.items-center.justify-between { position: relative !important; background: #0e0e0e !important; padding: 10px 12px !important; }
     #paymentModal .p-5 { padding: 8px 14px !important; }
     #paymentModal input { padding: 10px !important; font-size: 16px !important; min-height: 44px !important; }
@@ -996,6 +999,9 @@ a:hover { text-decoration: underline; }
         font-size: 0.85rem !important;
         border-radius: 10px !important;
     }
+
+    /* ===== CHAT INPUT: remove ugly purple border ===== */
+    #chatInput:focus { border-color: #252528 !important; box-shadow: none !important; }
 }
 
 @media (max-width: 480px) {
