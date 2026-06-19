@@ -586,7 +586,7 @@ select:focus {
     box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
 }
 input::placeholder, textarea::placeholder { color: #4b5563; }
-a:hover { text-decoration: underline; }
+a:hover { text-decoration: none; }
 
 /* ===== CHAT WIDGET ===== */
 @keyframes typingBounce {
@@ -659,8 +659,8 @@ a:hover { text-decoration: underline; }
 #paymentModal .rounded-2xl {
     transform: translateY(20px) scale(0.95);
     transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-    max-height: calc(100dvh - 8rem);
-    overflow-y: auto;
+    max-height: calc(100dvh - 7rem);
+    overflow: hidden;
 }
 #paymentModal.show .rounded-2xl {
     transform: translateY(0) scale(1);
@@ -995,12 +995,17 @@ a:hover { text-decoration: underline; }
     #chatInput:focus { border-color: #3a3a3a !important; box-shadow: none !important; }
 
     /* ===== PAYMENT MODAL ===== */
-    #paymentModal { padding: 0 !important; padding-top: 2rem !important; align-items: flex-start !important; }
-    #paymentModal .rounded-2xl { max-height: calc(100dvh - 4rem) !important; overflow-y: auto !important; margin: 0 !important; width: 100% !important; border-radius: 16px !important; }
-    #paymentModal .flex.items-center.justify-between { position: relative !important; background: #0e0e0e !important; padding: 12px 14px !important; }
-    #paymentModal .p-5 { padding: 10px 16px !important; }
-    #paymentModal input { padding: 12px !important; font-size: 16px !important; min-height: 48px !important; border-radius: 10px !important; }
-    #paymentModal .pay-submit-btn { padding: 14px !important; font-size: 0.95rem !important; min-height: 50px !important; border-radius: 12px !important; }
+    #paymentModal { padding: 0 !important; padding-top: 1rem !important; align-items: flex-start !important; }
+    #paymentModal .rounded-2xl { max-height: calc(100dvh - 2rem) !important; overflow: hidden !important; margin: 0 !important; width: 100% !important; border-radius: 16px !important; }
+    #paymentModal .flex.items-center.justify-between { position: relative !important; background: #0e0e0e !important; padding: 10px 14px !important; }
+    #paymentModal .p-5 { padding: 8px 16px !important; }
+    #paymentModal .p-5.space-y-4 > div { margin-bottom: 6px !important; }
+    #paymentModal input { padding: 10px !important; font-size: 16px !important; min-height: 44px !important; border-radius: 10px !important; }
+    #paymentModal label { font-size: 0.8rem !important; margin-bottom: 3px !important; }
+    #paymentModal .pay-submit-btn { padding: 12px !important; font-size: 0.9rem !important; min-height: 46px !important; border-radius: 12px !important; }
+    #paymentModal .text-lg { font-size: 1rem !important; }
+    #paymentModal .text-xl { font-size: 1.1rem !important; }
+    #paymentModal .text-sm { font-size: 0.8rem !important; }
 
     /* ===== FOOTER ===== */
     footer .grid.md\:grid-cols-4 { grid-template-columns: 1fr 1fr !important; gap: 16px !important; }

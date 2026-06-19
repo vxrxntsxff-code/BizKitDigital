@@ -1330,6 +1330,62 @@
 
     </script>
 
+    <!-- EXIT-INTENT POPUP -->
+    <div id="exitPopup" style="display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,0.85);backdrop-filter:blur(16px);opacity:0;transition:opacity 0.3s ease;">
+        <div style="background:#111;border:1px solid #1e1e1e;border-radius:20px;padding:32px 24px;max-width:380px;width:100%;text-align:center;position:relative;transform:scale(0.9);transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);">
+            <button onclick="closeExitPopup()" style="position:absolute;top:12px;right:12px;background:none;border:none;color:#6b7280;font-size:1.2rem;cursor:pointer;padding:8px;border-radius:8px;transition:color 0.2s;" onmouseover="this.style.color='#d1d5db'" onmouseout="this.style.color='#6b7280'">&times;</button>
+            <div style="width:48px;height:48px;border-radius:12px;background:rgba(139,92,246,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.5rem;">👋</div>
+            <h3 style="font-size:1.2rem;font-weight:700;color:#f3f4f6;margin-bottom:8px;">Уходите?</h3>
+            <p style="font-size:0.9rem;color:#9ca3af;margin-bottom:20px;line-height:1.5;">Пока не уходите — получите бесплатную консультацию по вашему проекту</p>
+            <a href="https://t.me/BizkitDigital_bot" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;font-weight:600;padding:14px 28px;border-radius:12px;font-size:0.95rem;text-decoration:none;width:100%;justify-content:center;transition:all 0.3s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(139,92,246,0.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+                Написать в Telegram
+            </a>
+            <p style="font-size:0.75rem;color:#6b7280;margin-top:12px;">Ответим за 5 минут</p>
+        </div>
+    </div>
+
+    <script>
+        // EXIT-INTENT POPUP
+        (function() {
+            let shown = false;
+            let timer = null;
+            document.addEventListener('mouseout', function(e) {
+                if (shown) return;
+                if (e.clientY < 0 || e.relatedTarget === null) {
+                    timer = setTimeout(function() {
+                        shown = true;
+                        const popup = document.getElementById('exitPopup');
+                        popup.style.display = 'flex';
+                        requestAnimationFrame(() => {
+                            requestAnimationFrame(() => {
+                                popup.style.opacity = '1';
+                                popup.querySelector('div').style.transform = 'scale(1)';
+                            });
+                        });
+                    }, 500);
+                }
+            });
+            document.addEventListener('mouseover', function() {
+                if (timer) { clearTimeout(timer); timer = null; }
+            });
+        })();
+
+        function closeExitPopup() {
+            const popup = document.getElementById('exitPopup');
+            popup.style.opacity = '0';
+            popup.querySelector('div').style.transform = 'scale(0.9)';
+            setTimeout(() => { popup.style.display = 'none'; }, 300);
+        }
+
+        // Also close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const popup = document.getElementById('exitPopup');
+                if (popup && popup.style.display !== 'none') closeExitPopup();
+            }
+        });
+    </script>
+
     <script src="/chat.js"></script>
 </body>
 </html>
