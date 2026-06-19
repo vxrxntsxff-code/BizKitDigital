@@ -10,6 +10,9 @@ if (!BOT_TOKEN) {
 const bot = new Bot(BOT_TOKEN);
 let botInitPromise = null;
 
+// Menu buttons that should NOT be forwarded to owner
+const MENU_BUTTONS = ['📦 Тарифы', '🛠 Услуги', '❓ Как это работает', '💬 Задать вопрос', '📞 Контакты', '📋 Кейсы', '❓ Частые вопросы'];
+
 const PACKAGES = {
     start: {
         name: 'Старт',
@@ -53,6 +56,12 @@ const PACKAGES = {
     },
 };
 
+const CASES = [
+    { name: 'Твой портной', type: 'ателье', icon: '✂️', result: '+40% записей через бота', desc: 'Клиенты записывались по телефону, терялись среди конкурентов в 2ГИС. Сделали лендинг + бот.' },
+    { name: 'Счастливый хвост', type: 'ветклиника', icon: '🐾', result: '-60% звонков на ресепшен', desc: 'Звонки отвлекали врачей. AI-чат берёт вопросы, бот записывает.' },
+    { name: 'Маникюрная N1', type: 'салон красоты', icon: '💅', result: 'Экономия 8 000₽/мес', desc: 'Заменили кривой YClients на нашего бота. Оплата картой в Telegram.' },
+];
+
 const SUPPORT_INFO = {
     price: 'от 1 500 ₽/мес',
     features: [
@@ -70,8 +79,8 @@ function mainKeyboard() {
         reply_markup: {
             keyboard: [
                 [{ text: '📦 Тарифы' }, { text: '🛠 Услуги' }],
-                [{ text: '❓ Как это работает' }, { text: '💬 Задать вопрос' }],
-                [{ text: '📞 Контакты' }],
+                [{ text: '📋 Кейсы' }, { text: '❓ Частые вопросы' }],
+                [{ text: '💬 Задать вопрос' }, { text: '📞 Контакты' }],
             ],
             resize_keyboard: true,
         },
@@ -87,7 +96,21 @@ function packagesKeyboard() {
         .text('Техподдержка', 'pkg_support');
 }
 
+// /start with deep link support
 bot.command('start', async (ctx) => {
+    const deepLink = ctx.match;
+    if (deepLink) {
+        const pkg = PACKAGES[deepLink];
+        if (pkg) {
+            const text = formatPackage(pkg);
+            const kb = new InlineKeyboard()
+                .text('Написать Диме', { url: 'https://t.me/vxrxntsxff' })
+                .row()
+                .text('← Все тарифы', 'back_to_packages');
+            await ctx.reply(text, { reply_markup: kb.reply_markup });
+            return;
+        }
+    }
     const welcome =
         '👋 Привет! Я бот BizkitDigital.\n\n' +
         'Мы создаём цифровые пакеты для бизнеса:\n' +
@@ -102,7 +125,8 @@ bot.command('help', async (ctx) => {
         'Используйте кнопки внизу экрана:\n' +
         '📦 Тарифы — подробнее о пакетах\n' +
         '🛠 Услуги — что мы делаем\n' +
-        '❓ Как это работает — процесс работы\n' +
+        '📋 Кейсы — наши проекты\n' +
+        '❓ Частые вопросы — ответы на вопросы\n' +
         '💬 Задать вопрос — связаться с нами\n' +
         '📞 Контакты — наши реквизиты\n\n' +
         'Или просто напишите сообщение — мы ответим!';
@@ -143,13 +167,37 @@ bot.hears('❓ Как это работает', async (ctx) => {
         '1️⃣ Знакомство\n' +
         '   Обсуждаем ваш бизнес и задачи\n\n' +
         '2️⃣ Разработка\n' +
-        '   Делаем пакет за 2-5 дней\n\n' +
+        '   Делаем пакет за 2-3 дня\n\n' +
         '3️⃣ Запуск\n' +
         '   Подключаем, тестируем, обучаем\n\n' +
         '4️⃣ Поддержка\n' +
         '   Помогаем каждый месяц на подписке\n\n' +
-        '💰 Оплата: 50% предоплата + 50% после сдачи\n' +
+        '💰 Оплата: полная через ЮKassa при заказе\n' +
         '🔒 Гарантия: возврат 100% если не понравится';
+    await ctx.reply(text);
+});
+
+bot.hears('📋 Кейсы', async (ctx) => {
+    let text = '📋 Наши проекты:\n\n';
+    for (const c of CASES) {
+        text += `${c.icon} «${c.name}» (${c.type})\n`;
+        text += `   ${c.desc}\n`;
+        text += `   Результат: ${c.result}\n\n`;
+    }
+    text += 'Больше на сайте: bizkitdigital.vercel.app/cases.html';
+    await ctx.reply(text);
+});
+
+bot.hears('❓ Частые вопросы', async (ctx) => {
+    const text =
+        '❓ Частые вопросы:\n\n' +
+        '💳 Оплата: полная через ЮKassa (карты, СБП)\n\n' +
+        '⏰ Сроки: 2-3 рабочих дня\n\n' +
+        '🔄 Возврат: 100% если не понравится\n\n' +
+        '🌐 Домен: на 1 год в комплекте\n\n' +
+        '🛠 Поддержка: от 1 500₽/мес\n\n' +
+        '📞 Контакты: @vxrxntsxff | +7(951)592-26-18\n\n' +
+        'Не нашли ответ? Напишите нам!';
     await ctx.reply(text);
 });
 
@@ -168,17 +216,15 @@ bot.hears('📞 Контакты', async (ctx) => {
 
 bot.hears('💬 Задать вопрос', async (ctx) => {
     const text =
-        '💬 Напишите ваш вопрос, и мы ответим в ближайшее время.\n\n' +
-        'Или свяжитесь с нами напрямую:\n' +
+        '💬 Напишите ваш вопрос, и мы ответим.\n\n' +
+        'Или свяжитесь напрямую:\n' +
         '📱 +7 (951) 592-26-18\n' +
         '💬 @vxrxntsxff';
     await ctx.reply(text);
 });
 
-bot.callbackQuery('pkg_start', async (ctx) => {
-    await ctx.answerCallbackQuery();
-    const pkg = PACKAGES.start;
-    let text = `📦 Пакет «${pkg.name}»\n\n`;
+function formatPackage(pkg) {
+    let text = `📦 Пакет «${pkg.name}»${pkg.popular ? ' ⭐' : ''}\n\n`;
     text += `Цена: ${pkg.price} (разовый)\n`;
     text += `${pkg.description}\n\n`;
     text += 'Что входит:\n';
@@ -187,83 +233,83 @@ bot.callbackQuery('pkg_start', async (ctx) => {
         text += '\nНе входит:\n';
         for (const f of pkg.notIncluded) text += `  ✕ ${f}\n`;
     }
-    text += '\n💬 Чтобы обсудить заказ, напишите нам:';
-    const kb = new InlineKeyboard()
-        .text('Написать Диме', { url: 'https://t.me/vxrxntsxff' })
-        .row()
-        .text('← Назад к тарифам', 'back_to_packages');
-    await ctx.editMessageText(text, { reply_markup: kb.reply_markup });
+    return text;
+}
+
+bot.callbackQuery('pkg_start', async (ctx) => {
+    try {
+        await ctx.answerCallbackQuery();
+        const text = formatPackage(PACKAGES.start) + '\n💬 Чтобы обсудить заказ, напишите нам:';
+        const kb = new InlineKeyboard()
+            .text('Написать Диме', { url: 'https://t.me/vxrxntsxff' })
+            .row()
+            .text('← Назад к тарифам', 'back_to_packages');
+        await ctx.editMessageText(text, { reply_markup: kb.reply_markup });
+    } catch (e) { /* message too old */ }
 });
 
 bot.callbackQuery('pkg_business', async (ctx) => {
-    await ctx.answerCallbackQuery();
-    const pkg = PACKAGES.business;
-    let text = `📦 Пакет «${pkg.name}» ⭐\n\n`;
-    text += `Цена: ${pkg.price} (разовый)\n`;
-    text += `${pkg.description}\n\n`;
-    text += 'Что входит:\n';
-    for (const f of pkg.features) text += `  ✓ ${f}\n`;
-    if (pkg.notIncluded.length) {
-        text += '\nНе входит:\n';
-        for (const f of pkg.notIncluded) text += `  ✕ ${f}\n`;
-    }
-    text += '\n💬 Чтобы обсудить заказ, напишите нам:';
-    const kb = new InlineKeyboard()
-        .text('Написать Диме', { url: 'https://t.me/vxrxntsxff' })
-        .row()
-        .text('← Назад к тарифам', 'back_to_packages');
-    await ctx.editMessageText(text, { reply_markup: kb.reply_markup });
+    try {
+        await ctx.answerCallbackQuery();
+        const text = formatPackage(PACKAGES.business) + '\n💬 Чтобы обсудить заказ, напишите нам:';
+        const kb = new InlineKeyboard()
+            .text('Написать Диме', { url: 'https://t.me/vxrxntsxff' })
+            .row()
+            .text('← Назад к тарифам', 'back_to_packages');
+        await ctx.editMessageText(text, { reply_markup: kb.reply_markup });
+    } catch (e) { /* message too old */ }
 });
 
 bot.callbackQuery('pkg_premium', async (ctx) => {
-    await ctx.answerCallbackQuery();
-    const pkg = PACKAGES.premium;
-    let text = `📦 Пакет «${pkg.name}»\n\n`;
-    text += `Цена: ${pkg.price} (разовый)\n`;
-    text += `${pkg.description}\n\n`;
-    text += 'Что входит:\n';
-    for (const f of pkg.features) text += `  ✓ ${f}\n`;
-    if (pkg.notIncluded.length) {
-        text += '\nНе входит:\n';
-        for (const f of pkg.notIncluded) text += `  ✕ ${f}\n`;
-    }
-    text += '\n💬 Чтобы обсудить заказ, напишите нам:';
-    const kb = new InlineKeyboard()
-        .text('Написать Диме', { url: 'https://t.me/vxrxntsxff' })
-        .row()
-        .text('← Назад к тарифам', 'back_to_packages');
-    await ctx.editMessageText(text, { reply_markup: kb.reply_markup });
+    try {
+        await ctx.answerCallbackQuery();
+        const text = formatPackage(PACKAGES.premium) + '\n💬 Чтобы обсудить заказ, напишите нам:';
+        const kb = new InlineKeyboard()
+            .text('Написать Диме', { url: 'https://t.me/vxrxntsxff' })
+            .row()
+            .text('← Назад к тарифам', 'back_to_packages');
+        await ctx.editMessageText(text, { reply_markup: kb.reply_markup });
+    } catch (e) { /* message too old */ }
 });
 
 bot.callbackQuery('pkg_support', async (ctx) => {
-    await ctx.answerCallbackQuery();
-    let text = '🛠 Техническая поддержка\n\n';
-    text += `Цена: ${SUPPORT_INFO.price}\n\n`;
-    text += 'Что входит:\n';
-    for (const f of SUPPORT_INFO.features) text += `  ✓ ${f}\n`;
-    text += '\nОплата ежемесячно. Отказ — в любой момент.';
-    text += '\n\n💬 Чтобы обсудить, напишите нам:';
-    const kb = new InlineKeyboard()
-        .text('Написать Диме', { url: 'https://t.me/vxrxntsxff' })
-        .row()
-        .text('← Назад к тарифам', 'back_to_packages');
-    await ctx.editMessageText(text, { reply_markup: kb.reply_markup });
+    try {
+        await ctx.answerCallbackQuery();
+        let text = '🛠 Техническая поддержка\n\n';
+        text += `Цена: ${SUPPORT_INFO.price}\n\n`;
+        text += 'Что входит:\n';
+        for (const f of SUPPORT_INFO.features) text += `  ✓ ${f}\n`;
+        text += '\nОплата ежемесячно. Отказ — в любой момент.';
+        text += '\n\n💬 Чтобы обсудить, напишите нам:';
+        const kb = new InlineKeyboard()
+            .text('Написать Диме', { url: 'https://t.me/vxrxntsxff' })
+            .row()
+            .text('← Назад к тарифам', 'back_to_packages');
+        await ctx.editMessageText(text, { reply_markup: kb.reply_markup });
+    } catch (e) { /* message too old */ }
 });
 
 bot.callbackQuery('back_to_packages', async (ctx) => {
-    await ctx.answerCallbackQuery();
-    let text = '📦 Наши тарифы:\n\n';
-    for (const [key, pkg] of Object.entries(PACKAGES)) {
-        const popular = pkg.popular ? ' ⭐ Популярный' : '';
-        text += `▪️ «${pkg.name}» — ${pkg.price}${popular}\n`;
-        text += `   ${pkg.description}\n\n`;
-    }
-    text += 'Поддержка после запуска: от 1 500 ₽/мес\n\n';
-    text += 'Подробнее — выберите тариф:';
-    await ctx.editMessageText(text, { reply_markup: packagesKeyboard().reply_markup });
+    try {
+        await ctx.answerCallbackQuery();
+        let text = '📦 Наши тарифы:\n\n';
+        for (const [key, pkg] of Object.entries(PACKAGES)) {
+            const popular = pkg.popular ? ' ⭐ Популярный' : '';
+            text += `▪️ «${pkg.name}» — ${pkg.price}${popular}\n`;
+            text += `   ${pkg.description}\n\n`;
+        }
+        text += 'Поддержка после запуска: от 1 500 ₽/мес\n\n';
+        text += 'Подробнее — выберите тариф:';
+        await ctx.editMessageText(text, { reply_markup: packagesKeyboard().reply_markup });
+    } catch (e) { /* message too old */ }
 });
 
+// Forward only non-menu text messages to owner
 bot.on('message:text', async (ctx) => {
+    const text = ctx.message.text;
+    if (MENU_BUTTONS.includes(text)) return;
+    if (text && text.startsWith('/')) return;
+
     if (OWNER_CHAT_ID) {
         try {
             const user = ctx.from;
@@ -272,7 +318,7 @@ bot.on('message:text', async (ctx) => {
                 '📩 Новое сообщение от клиента:\n\n' +
                 `От: @${user.username || user.first_name} (ID: ${user.id})\n` +
                 `Имя: ${user.first_name} ${user.last_name || ''}\n\n` +
-                `Сообщение: ${ctx.message.text}`
+                `Сообщение: ${text}`
             );
         } catch (e) {
             console.error('Forward error:', e);
