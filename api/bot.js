@@ -10,7 +10,6 @@ if (!BOT_TOKEN) {
 const bot = new Bot(BOT_TOKEN);
 let botInitPromise = null;
 
-// Menu buttons that should NOT be forwarded to owner
 const MENU_BUTTONS = ['📦 Тарифы', '🛠 Услуги', '❓ Как это работает', '💬 Задать вопрос', '📞 Контакты', '📋 Кейсы', '❓ Частые вопросы'];
 
 const PACKAGES = {
@@ -54,6 +53,20 @@ const PACKAGES = {
         ],
         notIncluded: [],
     },
+    custom: {
+        name: 'Собери свой',
+        price: 'от 20 000 ₽',
+        description: 'Выбери только то, что нужно',
+        features: [
+            'Лендинг — от 14 000₽',
+            'Telegram-бот — 12 000₽',
+            'AI-чат — 10 000₽',
+            'Онлайн-оплата — 12 000₽',
+            'CRM-интеграция — 10 000₽',
+            'Домен — 2 000₽',
+        ],
+        notIncluded: [],
+    },
 };
 
 const CASES = [
@@ -87,6 +100,28 @@ function mainKeyboard() {
     };
 }
 
+function servicesInlineKB() {
+    return new InlineKeyboard()
+        .text('Старт — 20 000 ₽', 'svc_start')
+        .row()
+        .text('Бизнес — 35 000 ₽ ⭐', 'svc_business')
+        .row()
+        .text('Премиум — 50 000 ₽', 'svc_premium')
+        .row()
+        .text('Собрать свой тариф', 'svc_custom')
+        .row()
+        .text('Техподдержка', 'svc_support');
+}
+
+function orderKeyboard(pkgKey) {
+    return new InlineKeyboard()
+        .text('🛒 Заказать', { url: `https://bizkitdigital.vercel.app/#pricing` })
+        .row()
+        .text('💬 Написать Диме', { url: 'https://t.me/vxrxntsxff' })
+        .row()
+        .text('← Назад к услугам', 'back_to_services');
+}
+
 function packagesKeyboard() {
     return new InlineKeyboard()
         .text('Старт — 20 000 ₽', 'pkg_start')
@@ -96,180 +131,217 @@ function packagesKeyboard() {
         .text('Техподдержка', 'pkg_support');
 }
 
-// /start with deep link support
-bot.command('start', async (ctx) => {
-    const deepLink = ctx.match;
-    if (deepLink) {
-        const pkg = PACKAGES[deepLink];
-        if (pkg) {
-            const text = formatPackage(pkg);
-            const kb = new InlineKeyboard()
-                .text('Написать Диме', { url: 'https://t.me/vxrxntsxff' })
-                .row()
-                .text('← Все тарифы', 'back_to_packages');
-            await ctx.reply(text, { reply_markup: kb.reply_markup });
-            return;
-        }
-    }
-    const welcome =
-        '👋 Привет! Я бот BizkitDigital.\n\n' +
-        'Мы создаём цифровые пакеты для бизнеса:\n' +
-        'сайты, Telegram-боты, AI-чаты и интеграции.\n\n' +
-        'Выберите действие:';
-    await ctx.reply(welcome, mainKeyboard());
-});
-
-bot.command('help', async (ctx) => {
-    const text =
-        'ℹ️ Помощь:\n\n' +
-        'Используйте кнопки внизу экрана:\n' +
-        '📦 Тарифы — подробнее о пакетах\n' +
-        '🛠 Услуги — что мы делаем\n' +
-        '📋 Кейсы — наши проекты\n' +
-        '❓ Частые вопросы — ответы на вопросы\n' +
-        '💬 Задать вопрос — связаться с нами\n' +
-        '📞 Контакты — наши реквизиты\n\n' +
-        'Или просто напишите сообщение — мы ответим!';
-    await ctx.reply(text);
-});
-
-bot.hears('📦 Тарифы', async (ctx) => {
-    let text = '📦 Наши тарифы:\n\n';
-    for (const [key, pkg] of Object.entries(PACKAGES)) {
-        const popular = pkg.popular ? ' ⭐ Популярный' : '';
-        text += `▪️ «${pkg.name}» — ${pkg.price}${popular}\n`;
-        text += `   ${pkg.description}\n\n`;
-    }
-    text += 'Поддержка после запуска: от 1 500 ₽/мес\n\n';
-    text += 'Подробнее — выберите тариф:';
-    await ctx.reply(text, { reply_markup: packagesKeyboard().reply_markup });
-});
-
-bot.hears('🛠 Услуги', async (ctx) => {
-    const text =
-        '🛠 Что мы делаем:\n\n' +
-        '🌐 Лендинги и сайты-визитки\n' +
-        '   Адаптивные сайты под ваш бизнес за 1-3 дня\n\n' +
-        '🤖 Telegram-боты\n' +
-        '   Автоматическая запись клиентов 24/7\n\n' +
-        '💬 AI-чат на сайте\n' +
-        '   Отвечает клиентам, пока вы работаете\n\n' +
-        '⚙️ Интеграции\n' +
-        '   CRM, Google Таблицы, ЮKassa\n\n' +
-        '🛠 Поддержка\n' +
-        '   Обновления и правки после запуска';
-    await ctx.reply(text);
-});
-
-bot.hears('❓ Как это работает', async (ctx) => {
-    const text =
-        '❓ Как мы работаем:\n\n' +
-        '1️⃣ Знакомство\n' +
-        '   Обсуждаем ваш бизнес и задачи\n\n' +
-        '2️⃣ Разработка\n' +
-        '   Делаем пакет за 2-3 дня\n\n' +
-        '3️⃣ Запуск\n' +
-        '   Подключаем, тестируем, обучаем\n\n' +
-        '4️⃣ Поддержка\n' +
-        '   Помогаем каждый месяц на подписке\n\n' +
-        '💰 Оплата: полная через ЮKassa при заказе\n' +
-        '🔒 Гарантия: возврат 100% если не понравится';
-    await ctx.reply(text);
-});
-
-bot.hears('📋 Кейсы', async (ctx) => {
-    let text = '📋 Наши проекты:\n\n';
-    for (const c of CASES) {
-        text += `${c.icon} «${c.name}» (${c.type})\n`;
-        text += `   ${c.desc}\n`;
-        text += `   Результат: ${c.result}\n\n`;
-    }
-    text += 'Больше на сайте: bizkitdigital.vercel.app/cases.html';
-    await ctx.reply(text);
-});
-
-bot.hears('❓ Частые вопросы', async (ctx) => {
-    const text =
-        '❓ Частые вопросы:\n\n' +
-        '💳 Оплата: полная через ЮKassa (карты, СБП)\n\n' +
-        '⏰ Сроки: 2-3 рабочих дня\n\n' +
-        '🔄 Возврат: 100% если не понравится\n\n' +
-        '🌐 Домен: на 1 год в комплекте\n\n' +
-        '🛠 Поддержка: от 1 500₽/мес\n\n' +
-        '📞 Контакты: @vxrxntsxff | +7(951)592-26-18\n\n' +
-        'Не нашли ответ? Напишите нам!';
-    await ctx.reply(text);
-});
-
-bot.hears('📞 Контакты', async (ctx) => {
-    const text =
-        '📞 Контакты:\n\n' +
-        '💬 Telegram: @vxrxntsxff\n' +
-        '📱 Телефон: +7 (951) 592-26-18\n' +
-        '📧 Email: dimalengardt87@gmail.com\n\n' +
-        '🌐 Сайт: bizkitdigital.vercel.app\n\n' +
-        'Ленгардт Дмитрий Евгеньевич\n' +
-        'Самозанятый (НПД)\n' +
-        'ИНН: 420544798477';
-    await ctx.reply(text);
-});
-
-bot.hears('💬 Задать вопрос', async (ctx) => {
-    const text =
-        '💬 Напишите ваш вопрос, и мы ответим.\n\n' +
-        'Или свяжитесь напрямую:\n' +
-        '📱 +7 (951) 592-26-18\n' +
-        '💬 @vxrxntsxff';
-    await ctx.reply(text);
-});
-
 function formatPackage(pkg) {
     let text = `📦 Пакет «${pkg.name}»${pkg.popular ? ' ⭐' : ''}\n\n`;
     text += `Цена: ${pkg.price} (разовый)\n`;
     text += `${pkg.description}\n\n`;
     text += 'Что входит:\n';
     for (const f of pkg.features) text += `  ✓ ${f}\n`;
-    if (pkg.notIncluded.length) {
+    if (pkg.notIncluded && pkg.notIncluded.length) {
         text += '\nНе входит:\n';
         for (const f of pkg.notIncluded) text += `  ✕ ${f}\n`;
     }
     return text;
 }
 
+// /start with deep link
+bot.command('start', async (ctx) => {
+    const deepLink = ctx.match;
+    if (deepLink && PACKAGES[deepLink]) {
+        const text = formatPackage(PACKAGES[deepLink]);
+        await ctx.reply(text, { reply_markup: orderKeyboard(deepLink) });
+        return;
+    }
+    await ctx.reply(
+        '👋 Привет! Я бот BizkitDigital.\n\n' +
+        'Мы создаём цифровые пакеты для бизнеса:\n' +
+        'сайты, Telegram-боты, AI-чаты и интеграции.\n\n' +
+        'Выберите действие:',
+        mainKeyboard()
+    );
+});
+
+bot.command('help', async (ctx) => {
+    await ctx.reply(
+        'ℹ️ Помощь:\n\n' +
+        '📦 Тарифы — выбрать пакет\n' +
+        '🛠 Услуги — что входит + заказ\n' +
+        '📋 Кейсы — наши проекты\n' +
+        '❓ Частые вопросы\n' +
+        '💬 Задать вопрос — связаться\n' +
+        '📞 Контакты — реквизиты'
+    );
+});
+
+bot.hears('📦 Тарифы', async (ctx) => {
+    let text = '📦 Наши тарифы:\n\n';
+    for (const [key, pkg] of Object.entries(PACKAGES)) {
+        if (key === 'custom') continue;
+        const popular = pkg.popular ? ' ⭐ Популярный' : '';
+        text += `▪️ «${pkg.name}» — ${pkg.price}${popular}\n   ${pkg.description}\n\n`;
+    }
+    text += `▪️ «Собрать свой» — от 20 000₽\n   Выбери только то, что нужно\n\n`;
+    text += 'Поддержка: от 1 500 ₽/мес\n\n';
+    text += 'Подробнее — выберите:';
+    await ctx.reply(text, { reply_markup: packagesKeyboard().reply_markup });
+});
+
+bot.hears('🛠 Услуги', async (ctx) => {
+    await ctx.reply(
+        '🛠 Что мы делаем:\n\n' +
+        '🌐 Лендинги и сайты-визитки\n' +
+        '🤖 Telegram-боты для записи 24/7\n' +
+        '💬 AI-чат на сайте\n' +
+        '⚙️ Интеграции: CRM, Google Таблицы, ЮKassa\n' +
+        '🛠 Поддержка после запуска\n\n' +
+        'Выберите тариф чтобы узнать подробности и заказать:',
+        { reply_markup: servicesInlineKB() }
+    );
+});
+
+bot.hears('❓ Как это работает', async (ctx) => {
+    await ctx.reply(
+        '❓ Как мы работаем:\n\n' +
+        '1️⃣ Знакомство — обсуждаем бизнес и задачи\n' +
+        '2️⃣ Разработка — делаем пакет за 2-3 дня\n' +
+        '3️⃣ Запуск — подключаем, тестируем, обучаем\n' +
+        '4️⃣ Поддержка — помогаем каждый месяц\n\n' +
+        '💰 Оплата полная через ЮKassa\n' +
+        '🔒 Гарантия: возврат 100% если не понравится'
+    );
+});
+
+bot.hears('📋 Кейсы', async (ctx) => {
+    let text = '📋 Наши проекты:\n\n';
+    for (const c of CASES) {
+        text += `${c.icon} «${c.name}» (${c.type})\n   ${c.desc}\n   Результат: ${c.result}\n\n`;
+    }
+    text += 'Больше: bizkitdigital.vercel.app/cases.html';
+    await ctx.reply(text);
+});
+
+bot.hears('❓ Частые вопросы', async (ctx) => {
+    await ctx.reply(
+        '❓ Частые вопросы:\n\n' +
+        '💳 Оплата: полная через ЮKassa (карты, СБП)\n' +
+        '⏰ Сроки: 2-3 рабочих дня\n' +
+        '🔄 Возврат: 100% если не понравится\n' +
+        '🌐 Домен: на 1 год в комплекте\n' +
+        '🛠 Поддержка: от 1 500₽/мес\n\n' +
+        'Не нашли ответ? Напишите нам!'
+    );
+});
+
+bot.hears('📞 Контакты', async (ctx) => {
+    await ctx.reply(
+        '📞 Контакты:\n\n' +
+        '💬 Telegram: @vxrxntsxff\n' +
+        '📱 Телефон: +7 (951) 592-26-18\n' +
+        '📧 Email: dimalengardt87@gmail.com\n' +
+        '🌐 Сайт: bizkitdigital.vercel.app\n\n' +
+        'Ленгардт Дмитрий Евгеньевич\n' +
+        'Самозанятый (НПД) | ИНН: 420544798477'
+    );
+});
+
+bot.hears('💬 Задать вопрос', async (ctx) => {
+    await ctx.reply(
+        '💬 Напишите ваш вопрос, и мы ответим.\n\n' +
+        'Или свяжитесь напрямую:\n' +
+        '📱 +7 (951) 592-26-18\n' +
+        '💬 @vxrxntsxff'
+    );
+});
+
+// === Inline callbacks: services menu ===
+bot.callbackQuery('svc_start', async (ctx) => {
+    try {
+        await ctx.answerCallbackQuery();
+        await ctx.editMessageText(formatPackage(PACKAGES.start) + '\n🛒 Чтобы заказать:', { reply_markup: orderKeyboard('start') });
+    } catch (e) {}
+});
+
+bot.callbackQuery('svc_business', async (ctx) => {
+    try {
+        await ctx.answerCallbackQuery();
+        await ctx.editMessageText(formatPackage(PACKAGES.business) + '\n🛒 Чтобы заказать:', { reply_markup: orderKeyboard('business') });
+    } catch (e) {}
+});
+
+bot.callbackQuery('svc_premium', async (ctx) => {
+    try {
+        await ctx.answerCallbackQuery();
+        await ctx.editMessageText(formatPackage(PACKAGES.premium) + '\n🛒 Чтобы заказать:', { reply_markup: orderKeyboard('premium') });
+    } catch (e) {}
+});
+
+bot.callbackQuery('svc_custom', async (ctx) => {
+    try {
+        await ctx.answerCallbackQuery();
+        const text =
+            '🔧 Собрать свой тариф\n\n' +
+            'Выберите только то, что нужно:\n\n' +
+            '  Лендинг — от 14 000₽\n' +
+            '  Telegram-бот — 12 000₽\n' +
+            '  AI-чат — 10 000₽\n' +
+            '  Онлайн-оплата — 12 000₽\n' +
+            '  CRM-интеграция — 10 000₽\n' +
+            '  Домен — 2 000₽\n\n' +
+            '💡 Если нужен весь функционал — дешевле взять пакет «Премиум» за 50 000₽\n\n' +
+            '🛒 Чтобы заказать:';
+        await ctx.editMessageText(text, { reply_markup: orderKeyboard('custom') });
+    } catch (e) {}
+});
+
+bot.callbackQuery('svc_support', async (ctx) => {
+    try {
+        await ctx.answerCallbackQuery();
+        let text = '🛠 Техническая поддержка\n\n';
+        text += `Цена: ${SUPPORT_INFO.price}\n\n`;
+        text += 'Что входит:\n';
+        for (const f of SUPPORT_INFO.features) text += `  ✓ ${f}\n`;
+        text += '\nОплата ежемесячно. Отказ — в любой момент.';
+        text += '\n\n🛒 Чтобы подключить:';
+        await ctx.editMessageText(text, { reply_markup: orderKeyboard('support') });
+    } catch (e) {}
+});
+
+bot.callbackQuery('back_to_services', async (ctx) => {
+    try {
+        await ctx.answerCallbackQuery();
+        await ctx.editMessageText(
+            '🛠 Что мы делаем:\n\n' +
+            '🌐 Лендинги и сайты-визитки\n' +
+            '🤖 Telegram-боты для записи 24/7\n' +
+            '💬 AI-чат на сайте\n' +
+            '⚙️ Интеграции: CRM, Google Таблицы, ЮKassa\n' +
+            '🛠 Поддержка после запуска\n\n' +
+            'Выберите тариф чтобы узнать подробности и заказать:',
+            { reply_markup: servicesInlineKB() }
+        );
+    } catch (e) {}
+});
+
+// === Inline callbacks: packages menu (from 📦 Тарифы) ===
 bot.callbackQuery('pkg_start', async (ctx) => {
     try {
         await ctx.answerCallbackQuery();
-        const text = formatPackage(PACKAGES.start) + '\n💬 Чтобы обсудить заказ, напишите нам:';
-        const kb = new InlineKeyboard()
-            .text('Написать Диме', { url: 'https://t.me/vxrxntsxff' })
-            .row()
-            .text('← Назад к тарифам', 'back_to_packages');
-        await ctx.editMessageText(text, { reply_markup: kb.reply_markup });
-    } catch (e) { /* message too old */ }
+        await ctx.editMessageText(formatPackage(PACKAGES.start) + '\n🛒 Чтобы заказать:', { reply_markup: orderKeyboard('start') });
+    } catch (e) {}
 });
 
 bot.callbackQuery('pkg_business', async (ctx) => {
     try {
         await ctx.answerCallbackQuery();
-        const text = formatPackage(PACKAGES.business) + '\n💬 Чтобы обсудить заказ, напишите нам:';
-        const kb = new InlineKeyboard()
-            .text('Написать Диме', { url: 'https://t.me/vxrxntsxff' })
-            .row()
-            .text('← Назад к тарифам', 'back_to_packages');
-        await ctx.editMessageText(text, { reply_markup: kb.reply_markup });
-    } catch (e) { /* message too old */ }
+        await ctx.editMessageText(formatPackage(PACKAGES.business) + '\n🛒 Чтобы заказать:', { reply_markup: orderKeyboard('business') });
+    } catch (e) {}
 });
 
 bot.callbackQuery('pkg_premium', async (ctx) => {
     try {
         await ctx.answerCallbackQuery();
-        const text = formatPackage(PACKAGES.premium) + '\n💬 Чтобы обсудить заказ, напишите нам:';
-        const kb = new InlineKeyboard()
-            .text('Написать Диме', { url: 'https://t.me/vxrxntsxff' })
-            .row()
-            .text('← Назад к тарифам', 'back_to_packages');
-        await ctx.editMessageText(text, { reply_markup: kb.reply_markup });
-    } catch (e) { /* message too old */ }
+        await ctx.editMessageText(formatPackage(PACKAGES.premium) + '\n🛒 Чтобы заказать:', { reply_markup: orderKeyboard('premium') });
+    } catch (e) {}
 });
 
 bot.callbackQuery('pkg_support', async (ctx) => {
@@ -280,13 +352,9 @@ bot.callbackQuery('pkg_support', async (ctx) => {
         text += 'Что входит:\n';
         for (const f of SUPPORT_INFO.features) text += `  ✓ ${f}\n`;
         text += '\nОплата ежемесячно. Отказ — в любой момент.';
-        text += '\n\n💬 Чтобы обсудить, напишите нам:';
-        const kb = new InlineKeyboard()
-            .text('Написать Диме', { url: 'https://t.me/vxrxntsxff' })
-            .row()
-            .text('← Назад к тарифам', 'back_to_packages');
-        await ctx.editMessageText(text, { reply_markup: kb.reply_markup });
-    } catch (e) { /* message too old */ }
+        text += '\n\n🛒 Чтобы подключить:';
+        await ctx.editMessageText(text, { reply_markup: orderKeyboard('support') });
+    } catch (e) {}
 });
 
 bot.callbackQuery('back_to_packages', async (ctx) => {
@@ -294,14 +362,14 @@ bot.callbackQuery('back_to_packages', async (ctx) => {
         await ctx.answerCallbackQuery();
         let text = '📦 Наши тарифы:\n\n';
         for (const [key, pkg] of Object.entries(PACKAGES)) {
+            if (key === 'custom') continue;
             const popular = pkg.popular ? ' ⭐ Популярный' : '';
-            text += `▪️ «${pkg.name}» — ${pkg.price}${popular}\n`;
-            text += `   ${pkg.description}\n\n`;
+            text += `▪️ «${pkg.name}» — ${pkg.price}${popular}\n   ${pkg.description}\n\n`;
         }
-        text += 'Поддержка после запуска: от 1 500 ₽/мес\n\n';
-        text += 'Подробнее — выберите тариф:';
+        text += `▪️ «Собрать свой» — от 20 000₽\n   Выбери только то, что нужно\n\n`;
+        text += 'Подробнее — выберите:';
         await ctx.editMessageText(text, { reply_markup: packagesKeyboard().reply_markup });
-    } catch (e) { /* message too old */ }
+    } catch (e) {}
 });
 
 // Forward only non-menu text messages to owner
@@ -330,11 +398,8 @@ module.exports = async (req, res) => {
     if (req.method !== 'POST') {
         return res.status(200).json({ ok: true, message: 'Bot webhook is running' });
     }
-
     try {
-        if (!botInitPromise) {
-            botInitPromise = bot.init();
-        }
+        if (!botInitPromise) botInitPromise = bot.init();
         await botInitPromise;
         await bot.handleUpdate(req.body);
         return res.status(200).json({ ok: true });
