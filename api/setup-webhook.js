@@ -2,22 +2,24 @@ const https = require('https');
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const WEBHOOK_URL = 'https://bizkitdigital.vercel.app/api/bot';
+const SETUP_SECRET = process.env.SETUP_SECRET || 'bizkit-setup-2026';
 
 module.exports = async (req, res) => {
+    const secret = req.query.secret || (req.body && req.body.secret);
+    if (secret !== SETUP_SECRET) {
+        return res.status(403).json({ error: 'Forbidden' });
+    }
 
     if (!BOT_TOKEN) {
         return res.status(500).json({ error: 'TELEGRAM_BOT_TOKEN not set' });
     }
 
     try {
-        // Step 1: Delete old webhook
         const delResult = await tgApi('deleteWebhook');
-        // Step 2: Set new webhook
         const setResult = await tgApi('setWebhook', {
             url: WEBHOOK_URL,
             allowed_updates: ['message', 'callback_query']
         });
-        // Step 3: Verify
         const info = await tgApi('getWebhookInfo');
 
         return res.status(200).json({

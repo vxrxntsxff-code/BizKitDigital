@@ -4,7 +4,8 @@ const { checkRateLimit } = require('./_lib/rate-limit');
 
 const SITE_ORIGIN = 'https://bizkitdigital.vercel.app';
 
-const VALID_AMOUNTS = [20000, 35000, 50000];
+const MIN_AMOUNT = 2000;
+const MAX_AMOUNT = 50000;
 const MAX_BODY_SIZE = 1024 * 1024;
 
 module.exports = async (req, res) => {
@@ -48,11 +49,11 @@ module.exports = async (req, res) => {
     const { amount, description, return_url, metadata } = body;
 
     const numAmount = Number(amount);
-    if (!amount || isNaN(numAmount) || numAmount <= 0) {
+    if (!amount || isNaN(numAmount) || numAmount < MIN_AMOUNT) {
         return res.status(400).json({ error: 'Invalid amount' });
     }
-    if (!VALID_AMOUNTS.includes(numAmount)) {
-        return res.status(400).json({ error: 'Invalid package amount' });
+    if (numAmount > MAX_AMOUNT) {
+        return res.status(400).json({ error: 'Amount too large' });
     }
     if (!description || typeof description !== 'string' || description.length > 500) {
         return res.status(400).json({ error: 'Invalid description' });

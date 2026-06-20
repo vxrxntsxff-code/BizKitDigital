@@ -201,9 +201,7 @@ async function sendMessage() {
             chatHistory.push({ role: 'assistant', content: data.reply });
             addMsg(data.reply);
         } else if (data.fallback) {
-            const fallback = getLocalAnswer(text);
-            if (fallback) { addMsg(fallback); }
-            else { addMsg('Сейчас нагруженный час, попробуйте переформулировать вопрос или напишите в Telegram @vxrxntsxff.'); }
+            addMsg('Сейчас нагруженный час, попробуйте переформулировать вопрос или напишите в Telegram @vxrxntsxff.');
         } else {
             addMsg('Извините, не удалось получить ответ. Напишите в Telegram @vxrxntsxff.');
         }
@@ -234,15 +232,6 @@ function addMsg(text, isUser = false) {
     c.scrollTop = c.scrollHeight;
     const qa = document.getElementById('quickActions');
     if (qa && isUser) qa.style.display = 'none';
-}
-
-function rateMsg(btn, msgId, val) {
-    const container = document.getElementById(msgId);
-    if (!container) return;
-    const btns = container.querySelectorAll('button');
-    btns.forEach(b => { b.style.opacity = '0.3'; b.dataset.rated = '1'; b.disabled = true; });
-    btn.style.opacity = '1';
-    btn.style.transform = 'scale(1.3)';
 }
 
 function showTyping() { document.getElementById('typingIndicator').style.display = 'block'; }
