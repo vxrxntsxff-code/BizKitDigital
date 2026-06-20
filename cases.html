@@ -429,10 +429,21 @@
                     <input type="tel" class="form-input" id="fbPhone" required maxlength="15" style="padding-left: 32px;" placeholder="(___) ___-__-__">
                 </div>
             </div>
-            <div class="form-grid">
-                <input type="text" class="form-input" placeholder="@telegram" id="fbTelegram">
-                <input type="email" class="form-input" placeholder="email@example.com" id="fbEmail">
-            </div>
+                <div class="form-grid">
+                    <div><label for="fbName" style="display:block;margin-bottom:6px;font-size:14px;color:#9ca3af;">Имя *</label><input type="text" id="fbName" class="form-input" placeholder="Ваше имя" required></div>
+                </div>
+                <div class="form-grid">
+                    <div><label for="fbPhone" style="display:block;margin-bottom:6px;font-size:14px;color:#9ca3af;">Телефон *</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #6b7280; font-size: 0.95rem; pointer-events: none; font-family: inherit;">+7</span>
+                        <input type="tel" id="fbPhone" class="form-input" required maxlength="15" style="padding-left: 32px;" placeholder="(___) ___-__-__">
+                    </div></div>
+                    <div><label for="fbTelegram" style="display:block;margin-bottom:6px;font-size:14px;color:#9ca3af;">Telegram</label><input type="text" id="fbTelegram" class="form-input" placeholder="@username"></div>
+                </div>
+                <div class="form-grid">
+                    <div><label for="fbEmail" style="display:block;margin-bottom:6px;font-size:14px;color:#9ca3af;">Email</label><input type="email" id="fbEmail" class="form-input" placeholder="email@example.com"></div>
+                    <div><label for="fbMessage" style="display:block;margin-bottom:6px;font-size:14px;color:#9ca3af;">Сообщение</label><textarea id="fbMessage" class="form-input" placeholder="Расскажите о вашем проекте..." style="resize: vertical; min-height: 100px;"></textarea></div>
+                </div>
             <div class="form-grid full">
                 <textarea class="form-input" placeholder="Расскажите о вашем проекте..." id="fbMessage" style="resize: vertical; min-height: 100px;"></textarea>
             </div>
