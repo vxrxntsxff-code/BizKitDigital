@@ -1,93 +1,12 @@
 {
     "version": 2,
     "routes": [
-        {
-            "src": "/api/(.*)",
-            "dest": "/api/$1"
-        },
-        {
-            "src": "/\\.uploads/(.*)",
-            "dest": "/.uploads/$1"
-        },
-        {
-            "src": "/(offer|requisites|success|cases|blog|contract)\\.html",
-            "dest": "/$1.html"
-        },
-        {
-            "src": "/common\\.css",
-            "dest": "/common.css"
-        },
-        {
-            "src": "/chat\\.js",
-            "dest": "/chat.js"
-        },
-        {
-            "src": "/yandex_258656d0738f0e58\\.html",
-            "dest": "/yandex_258656d0738f0e58.html"
-        },
-        {
-            "src": "/google625ce7a6ac108769\\.html",
-            "dest": "/google625ce7a6ac108769.html"
-        },
-        {
-            "src": "/sitemap\\.xml",
-            "dest": "/sitemap.xml"
-        },
-        {
-            "src": "/robots\\.txt",
-            "dest": "/robots.txt"
-        }
-    ],
-    "headers": [
-        {
-            "source": "/(.*)",
-            "headers": [
-                {
-                    "key": "X-Content-Type-Options",
-                    "value": "nosniff"
-                },
-                {
-                    "key": "X-Frame-Options",
-                    "value": "DENY"
-                },
-                {
-                    "key": "X-XSS-Protection",
-                    "value": "1; mode=block"
-                },
-                {
-                    "key": "Referrer-Policy",
-                    "value": "strict-origin-when-cross-origin"
-                },
-                {
-                    "key": "Permissions-Policy",
-                    "value": "camera=(), microphone=(), geolocation=()"
-                },
-                {
-                    "key": "Content-Security-Policy",
-                    "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://mc.yandex.ru https://yandex.ru; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://openrouter.ai https://api.telegram.org; frame-ancestors 'none';"
-                },
-                {
-                    "key": "Cache-Control",
-                    "value": "public, max-age=3600"
-                }
-            ]
-        },
-        {
-            "source": "/api/(.*)",
-            "headers": [
-                {
-                    "key": "X-Content-Type-Options",
-                    "value": "nosniff"
-                },
-                {
-                    "key": "X-Frame-Options",
-                    "value": "DENY"
-                },
-                {
-                    "key": "Cache-Control",
-                    "value": "no-store, no-cache, must-revalidate"
-                }
-            ]
-        }
+        { "src": "/api/(.*)", "dest": "/api/$1" },
+        { "src": "/\\.uploads/(.*)", "dest": "/.uploads/$1" },
+        { "src": "/(offer|requisites|success|cases|blog|contract)\\.html", "dest": "/$1.html" },
+        { "src": "/common\\.css", "dest": "/common.css" },
+        { "src": "/chat\\.js", "dest": "/chat.js" },
+        { "src": "/sitemap\\.xml", "dest": "/sitemap.xml" },
+        { "src": "/robots\\.txt", "dest": "/robots.txt" }
     ]
 }
