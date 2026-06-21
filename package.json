@@ -2,6 +2,9 @@
   "name": "bizkitdigital-sitebot",
   "private": true,
   "type": "commonjs",
+  "scripts": {
+    "build": "echo 'Static site - no build needed'"
+  },
   "dependencies": {
     "grammy": "^1.36.1",
     "@upstash/ratelimit": "^2.0.0",
