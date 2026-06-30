@@ -143,7 +143,21 @@ module.exports = async (req, res) => {
         if (!reply || reply.trim() === '') {
             return res.status(200).json({ reply: null, fallback: true, error: 'Empty response from model' });
         }
-        return res.status(200).json({ reply: reply.trim() });
+
+        // Strip internal reasoning/thinking that some models leak
+        reply = reply.replace(/<thinking>[\s\S]*?<\/thinking>/gi, '').trim();
+        reply = reply.replace(/\*\*Internal[\s\S]*?\*\*/g, '').trim();
+        reply = reply.replace(/^We need to[\s\S]*?(?=\n\n|\n[A-Я])/i, '').trim();
+        reply = reply.replace(/^Let's[\s\S]*?(?=\n\n|\n[A-Я])/i, '').trim();
+        reply = reply.replace(/^I should[\s\S]*?(?=\n\n|\n[A-Я])/i, '').trim();
+        reply = reply.replace(/^Okay[\s\S]*?(?=\n\n|\n[A-Я])/i, '').trim();
+
+        // If nothing useful left, use fallback
+        if (!reply || reply.length < 10) {
+            return res.status(200).json({ reply: null, fallback: true, error: 'Model leaked reasoning' });
+        }
+
+        return res.status(200).json({ reply: reply });
     } catch (error) {
         return res.status(200).json({
             reply: null,
